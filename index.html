@@ -75,6 +75,31 @@ textarea.answer:focus{outline:2px solid var(--accent); border-color:var(--accent
 .model h4{margin:0 0 .4rem; color:var(--ok-ink)}
 .model-answer{margin:.25rem 0; font-weight:600}
 .technique{margin:.6rem 0 0; color:var(--muted); font-size:.95rem}
+#activitybar{position:sticky; top:0; z-index:50}
+.activity{
+  display:flex; flex-wrap:wrap; align-items:center; gap:.45rem .9rem;
+  background:#0a5e66; color:#fff; padding:.5rem .9rem; font-size:.95rem;
+  border-bottom:1px solid rgba(255,255,255,.2);
+}
+.activity .act-label{font-size:1.1rem}
+.activity .act-name{
+  font:inherit; padding:.25rem .5rem; border-radius:8px; width:9rem;
+  border:1px solid rgba(255,255,255,.5); background:rgba(255,255,255,.12); color:#fff;
+}
+.activity .act-name::placeholder{color:rgba(255,255,255,.7)}
+.activity .act-datetime{opacity:.9; font-variant-numeric:tabular-nums}
+.activity .act-progress{display:flex; align-items:center; gap:.5rem; flex:1 1 220px; min-width:190px}
+.activity .act-progress-text{white-space:nowrap; font-weight:600}
+.activity .act-bar{flex:1; height:.55rem; min-width:60px; background:rgba(255,255,255,.25); border-radius:999px; overflow:hidden}
+.activity .act-bar-fill{height:100%; width:0; background:#caff9e; transition:width .3s}
+.activity.reached{background:#137333}
+.activity .act-correct,.activity .act-active{opacity:.95; white-space:nowrap; font-variant-numeric:tabular-nums}
+.activity .act-reset{
+  font:inherit; cursor:pointer; color:#fff; border-radius:8px; padding:.25rem .7rem;
+  background:rgba(255,255,255,.15); border:1px solid rgba(255,255,255,.5);
+}
+.activity .act-reset:hover{background:rgba(255,255,255,.28)}
+@media (max-width:560px){ .activity{font-size:.85rem} .activity .act-name{width:7rem} }
 .open-tools{display:flex; gap:.6rem; margin-bottom:.35rem}
 .check-answer{
   font:inherit; cursor:pointer; color:var(--accent-ink); background:#fff;
@@ -117,6 +142,7 @@ textarea.answer:focus{outline:2px solid var(--accent); border-color:var(--accent
 </style>
 </head>
 <body>
+<header id="activitybar"></header>
 <main id="app"></main>
 <script>
 /* ============ DATA ============ */
@@ -572,6 +598,35 @@ const Progress = {
   get(areaId){ return this.data[areaId] || { correct: 0, total: 0 }; },
 };
 
+/* ============ ACTIVITY ============ */
+let activityRefresh = null;
+function refreshActivity(){ if (activityRefresh) activityRefresh(); }
+
+const Activity = {
+  key: 'wst-activity-v1',
+  data: { name: '', done: 0, correct: 0, seconds: 0 },
+  goal: 20,
+  load(){
+    try { const s = JSON.parse(localStorage.getItem(this.key) || 'null'); if (s && typeof s === 'object') this.data = Object.assign(this.data, s); } catch (e) {}
+  },
+  save(){ try { localStorage.setItem(this.key, JSON.stringify(this.data)); } catch (e) {} },
+  record(isCorrect){ this.data.done += 1; if (isCorrect === true) this.data.correct += 1; this.save(); refreshActivity(); },
+  tick(){ this.data.seconds += 1; this.save(); refreshActivity(); },
+  setName(n){ this.data.name = n; this.save(); },
+  reset(){ this.data = { name: this.data.name, done: 0, correct: 0, seconds: 0 }; this.save(); refreshActivity(); },
+};
+
+function parseGoal(search){
+  const m = /[?&]goal=(\d+)/.exec(search || '');
+  const n = m ? parseInt(m[1], 10) : 20;
+  return Math.max(1, Math.min(1000, n));
+}
+function formatDuration(total){
+  const pad = (x) => (x < 10 ? '0' + x : '' + x);
+  const s = total % 60, m = Math.floor(total / 60) % 60, h = Math.floor(total / 3600);
+  return (h > 0 ? h + ':' + pad(m) : '' + m) + ':' + pad(s);
+}
+
 /* ============ GENERATE ============ */
 function makeRng(seed){
   let s = seed >>> 0;
@@ -702,6 +757,7 @@ function renderMc(ex, cfg){
         if (typeof updateScore === 'function') updateScore(ex.area);
       }
       if (cfg.onAnswer) cfg.onAnswer(r.correct);
+      Activity.record(r.correct);
     });
     return b;
   });
@@ -738,6 +794,7 @@ function renderGap(ex){
       feedback.appendChild(line);
       Progress.record(ex.area, r.correct);
       if (typeof updateScore === 'function') updateScore(ex.area);
+      Activity.record(r.correct);
     });
     para.appendChild(select);
   });
@@ -763,6 +820,7 @@ function renderOpen(ex){
   const results = el('div', { class: 'check-results' });
   node.appendChild(results);
 
+  let counted = false;
   checkBtn.addEventListener('click', () => {
     results.innerHTML = '';
     const r = checkOpen(ex, ta.value);
@@ -770,6 +828,7 @@ function renderOpen(ex){
       results.appendChild(el('div', { class: 'check-empty' }, 'Write your answer first, then check.'));
       return;
     }
+    if (!counted){ counted = true; Activity.record(null); }
     r.results.forEach(res => {
       results.appendChild(el('div', { class: res.pass ? 'is-correct' : 'is-incorrect' },
         (res.pass ? '✓ ' : '⚠ ') + res.label + (res.pass ? '' : ' — ' + res.hint)));
@@ -877,6 +936,60 @@ function renderPractice(area){
   wrap.appendChild(toggle);
   wrap.appendChild(panel);
   return wrap;
+}
+
+function updateClock(elm){
+  try {
+    const now = new Date();
+    const pad = (x) => (x < 10 ? '0' + x : '' + x);
+    elm.textContent = now.getFullYear() + '-' + pad(now.getMonth() + 1) + '-' + pad(now.getDate()) +
+      ' ' + pad(now.getHours()) + ':' + pad(now.getMinutes()) + ':' + pad(now.getSeconds());
+  } catch (e) {}
+}
+function renderActivityBar(){
+  const bar = el('div', { class: 'activity' });
+  const nameInput = el('input', { class: 'act-name', type: 'text', placeholder: 'Your name', maxlength: '40' });
+  nameInput.value = Activity.data.name || '';
+  nameInput.addEventListener('input', () => Activity.setName(nameInput.value));
+
+  const datetime = el('span', { class: 'act-datetime' }, '');
+  const progText = el('span', { class: 'act-progress-text' }, '');
+  const barFill = el('div', { class: 'act-bar-fill' });
+  const barTrack = el('div', { class: 'act-bar' }, barFill);
+  const progWrap = el('div', { class: 'act-progress' }, [progText, barTrack]);
+  const correct = el('span', { class: 'act-correct' }, '');
+  const active = el('span', { class: 'act-active' }, '');
+  const resetBtn = el('button', { class: 'act-reset', type: 'button' }, 'Reset');
+  resetBtn.addEventListener('click', () => {
+    if (typeof confirm !== 'function' || confirm('Reset your progress counter? (Your name stays.)')) Activity.reset();
+  });
+
+  bar.appendChild(el('span', { class: 'act-label' }, '📊'));
+  bar.appendChild(nameInput);
+  bar.appendChild(datetime);
+  bar.appendChild(progWrap);
+  bar.appendChild(correct);
+  bar.appendChild(active);
+  bar.appendChild(resetBtn);
+
+  activityRefresh = function(){
+    const d = Activity.data, goal = Activity.goal, reached = d.done >= goal;
+    progText.textContent = 'Tasks ' + d.done + ' / ' + goal + (reached ? '  ✓ Goal reached!' : '');
+    barFill.style.width = Math.min(100, Math.round(d.done / goal * 100)) + '%';
+    bar.classList.toggle('reached', reached);
+    correct.textContent = 'Correct ' + d.correct;
+    active.textContent = 'Active ' + formatDuration(d.seconds);
+  };
+  refreshActivity();
+  updateClock(datetime);
+  return bar;
+}
+function startActivityTimer(){
+  setInterval(function(){
+    if (!document.hidden) Activity.tick();
+    const dt = document.querySelector('.act-datetime');
+    if (dt) updateClock(dt);
+  }, 1000);
 }
 
 function renderApp(root){
@@ -1246,12 +1359,98 @@ test('every cohesion relation has a label and pairs reference known relations', 
   COHESION_BANK.pairs.forEach((p, i) => assert(COHESION_BANK.connectors[p.relation], 'pair ' + i + ' unknown relation "' + p.relation + '"'));
 });
 
+test('parseGoal reads ?goal and defaults/clamps', () => {
+  assert(parseGoal('') === 20, 'default 20');
+  assert(parseGoal('?goal=25') === 25, '25');
+  assert(parseGoal('?x=1&goal=8') === 8, '8');
+  assert(parseGoal('?goal=0') === 1, 'clamp low');
+  assert(parseGoal('?goal=5000') === 1000, 'clamp high');
+});
+test('Activity.record / reset track done/correct and keep name', () => {
+  Activity.reset(); Activity.setName('Mia');
+  Activity.record(true); Activity.record(false); Activity.record(true); Activity.record(null);
+  assert(Activity.data.done === 4, 'done ' + Activity.data.done);
+  assert(Activity.data.correct === 2, 'correct ' + Activity.data.correct);
+  Activity.reset();
+  assert(Activity.data.done === 0 && Activity.data.correct === 0, 'reset zeroes');
+  assert(Activity.data.name === 'Mia', 'reset keeps name');
+});
+test('Activity.tick increments seconds', () => {
+  Activity.reset(); Activity.tick(); Activity.tick();
+  assert(Activity.data.seconds === 2, 'seconds ' + Activity.data.seconds);
+});
+test('formatDuration formats mm:ss and h:mm:ss', () => {
+  assert(formatDuration(5) === '0:05', formatDuration(5));
+  assert(formatDuration(65) === '1:05', formatDuration(65));
+  assert(formatDuration(3725) === '1:02:05', formatDuration(3725));
+});
+test('renderActivityBar shows name, progress, correct, reset', () => {
+  Activity.reset(); Activity.goal = 20;
+  Activity.record(true); Activity.record(true); Activity.record(false);
+  const bar = renderActivityBar();
+  assert(bar.querySelector('.act-name'), 'name input present');
+  assert(/Tasks 3 \/ 20/.test(bar.querySelector('.act-progress-text').textContent), 'progress: ' + bar.querySelector('.act-progress-text').textContent);
+  assert(/Correct 2/.test(bar.querySelector('.act-correct').textContent), 'correct text');
+  assert(bar.querySelector('.act-reset'), 'reset present');
+});
+test('renderActivityBar marks the goal as reached', () => {
+  Activity.reset(); Activity.goal = 2;
+  Activity.record(true); Activity.record(true);
+  const bar = renderActivityBar();
+  assert(bar.classList.contains('reached'), 'reached class');
+  assert(/Goal reached/.test(bar.querySelector('.act-progress-text').textContent), 'reached text');
+});
+test('answering an mc records a task in Activity', () => {
+  Activity.reset();
+  const ex = EXERCISES.find(e => e.id === 'vb-1');
+  const node = renderMc(ex);
+  const ci = ex.options.findIndex(o => o.correct);
+  node.querySelectorAll('.opt')[ci].click();
+  assert(Activity.data.done === 1, 'done ' + Activity.data.done);
+  assert(Activity.data.correct === 1, 'correct ' + Activity.data.correct);
+});
+test('answering a gap sub-question records a task in Activity', () => {
+  Activity.reset();
+  const ex = EXERCISES.find(e => e.id === 'ko-1');
+  const node = renderGap(ex);
+  const sel = node.querySelector('select.gap-select');
+  const ci = ex.gaps[0].options.findIndex(o => o.correct);
+  sel.value = String(ci); sel.dispatchEvent(new Event('change'));
+  assert(Activity.data.done === 1, 'done ' + Activity.data.done);
+  assert(Activity.data.correct === 1, 'correct ' + Activity.data.correct);
+});
+test('checking an open answer records exactly one task (no double count, no correct)', () => {
+  Activity.reset();
+  const ex = EXERCISES.find(e => e.id === 'st-2');
+  const node = renderOpen(ex);
+  const ta = node.querySelector('textarea'), btn = node.querySelector('.check-answer');
+  btn.click();
+  assert(Activity.data.done === 0, 'empty check must not count');
+  ta.value = 'Although the service is delayed, commuters, having no alternative, continue to rely on it.';
+  btn.click(); btn.click();
+  assert(Activity.data.done === 1, 'done ' + Activity.data.done);
+  assert(Activity.data.correct === 0, 'open has no correct');
+});
+test('practice tasks also count in Activity (fixed area score unaffected)', () => {
+  Activity.reset(); Progress.init(EXERCISES);
+  const ex = generateVerbMc(5);
+  const node = renderMc(ex, { trackProgress: false });
+  node.querySelectorAll('.opt')[ex.options.findIndex(o => o.correct)].click();
+  assert(Activity.data.done === 1, 'practice should count in Activity');
+  assert(Progress.get('verben').correct === 0, 'fixed area score must stay 0');
+});
+
 /* ============ BOOT ============ */
 function boot(){
   const testing = /test/.test(location.search) || /test/.test(location.hash);
   Progress.init(EXERCISES);
   if (testing){ runSelfTests(); return; }
+  Activity.load();
+  Activity.goal = parseGoal(location.search);
+  const bar = document.getElementById('activitybar');
+  if (bar) bar.appendChild(renderActivityBar());
   renderApp(document.getElementById('app'));
+  startActivityTimer();
 }
 document.addEventListener('DOMContentLoaded', boot);
 </script>
