@@ -185,10 +185,10 @@ const EXERCISES = [
     prompt: 'The article makes the argument that social media erodes attention spans.',
     weak: 'makes',
     options: [
-      { text: 'advances', correct: true,  rationale: '“advance an argument” — a precise, idiomatic collocation.' },
-      { text: 'gives',    correct: false, rationale: '“give an argument” is unidiomatic and vague.' },
-      { text: 'does',     correct: false, rationale: 'Even weaker and uncollocational.' },
-      { text: 'makes',    correct: false, rationale: 'The original, colourless verb.' },
+      { text: 'advances', correct: true,  rationale: '“advance an argument” — to put it forward; precise and idiomatic.' },
+      { text: 'rebuts',   correct: false, rationale: 'To rebut an argument is to argue against it — the opposite of making it.' },
+      { text: 'counters', correct: false, rationale: 'To counter an argument is to oppose it, not to put it forward.' },
+      { text: 'concedes', correct: false, rationale: 'To concede an argument is to give it up — again the opposite of advancing it.' },
     ],
   },
   {
@@ -276,117 +276,48 @@ const VERB_BANK = {
     'that the reforms have stalled amid political wrangling',
     'that nostalgia increasingly shapes consumer culture',
   ],
-  frames: [
+  // Two families. The correct answers are clearly the best neutral choice; the
+  // distractors are STRONG, plausible verbs that must be excluded by reasoning
+  // about stance (opposite) or connotation (wrong nuance) — not weak filler.
+  families: [
     {
-      weak: 'makes the point',
-      strong: [
-        { text: 'contends', rationale: '“contend that …” is a precise, idiomatic way to assert a claim.' },
-        { text: 'argues', rationale: '“argue that …” states a reasoned claim — far stronger than “make the point”.' },
-        { text: 'maintains', rationale: '“maintain that …” asserts a position held firmly.' },
-        { text: 'asserts', rationale: '“assert that …” states a claim with conviction.' },
+      label: 'claim',
+      weak: ['makes the point', 'thinks', 'says', 'states', 'mentions', 'points out'],
+      correct: [
+        { text: 'contends', rationale: '“contend that …” — a neutral, confident assertion of a claim.' },
+        { text: 'argues', rationale: '“argue that …” — states a reasoned claim with exactly the right, neutral force.' },
+        { text: 'maintains', rationale: '“maintain that …” — asserts a position held firmly, without extra colouring.' },
+        { text: 'asserts', rationale: '“assert that …” — states the claim with plain conviction.' },
+        { text: 'holds', rationale: '“hold that …” — the precise verb for a reasoned view.' },
+        { text: 'posits', rationale: '“posit that …” — puts the claim forward for consideration.' },
       ],
       distractors: [
-        { text: 'gives', rationale: '“give that …” is not idiomatic.' },
-        { text: 'tells', rationale: 'Claims are not “told” — wrong collocation.' },
-        { text: 'does', rationale: 'Even weaker and uncollocational.' },
+        { text: 'denies', rationale: 'The opposite: to deny is to reject the claim, not assert it.' },
+        { text: 'disputes', rationale: 'To dispute is to challenge the claim, not to put it forward.' },
+        { text: 'doubts', rationale: 'Expresses uncertainty — the opposite of the conviction the sentence needs.' },
+        { text: 'alleges', rationale: 'Implies the claim is unproven or made without evidence — an extra nuance the original lacks.' },
+        { text: 'laments', rationale: 'Adds emotional regret rather than neutrally stating a claim.' },
+        { text: 'boasts', rationale: 'Implies bragging — the wrong tone for a neutral assertion.' },
+        { text: 'insinuates', rationale: 'Implies a sly, indirect hint rather than an open claim.' },
       ],
     },
     {
-      weak: 'shows',
-      strong: [
-        { text: 'demonstrates', rationale: '“demonstrate that …” is precise and evidence-based.' },
-        { text: 'reveals', rationale: '“reveal that …” is vivid and exact — more than the colourless “show”.' },
-        { text: 'illustrates', rationale: '“illustrate that …” shows with a clear example.' },
-        { text: 'underscores', rationale: '“underscore that …” emphasises the point.' },
+      label: 'evidence',
+      weak: ['shows', 'goes to show', 'makes clear'],
+      correct: [
+        { text: 'demonstrates', rationale: '“demonstrate that …” — shows it on the evidence; precise and formal.' },
+        { text: 'reveals', rationale: '“reveal that …” — brings the finding to light; vivid and exact.' },
+        { text: 'confirms', rationale: '“confirm that …” — the evidence settles the matter.' },
+        { text: 'establishes', rationale: '“establish that …” — proves it firmly on the evidence.' },
+        { text: 'indicates', rationale: '“indicate that …” — the evidence points clearly to it.' },
       ],
       distractors: [
-        { text: 'says', rationale: 'Vague and colourless.' },
-        { text: 'gives', rationale: 'Uncollocational here.' },
-        { text: 'makes', rationale: 'Even weaker.' },
-      ],
-    },
-    {
-      weak: 'says',
-      strong: [
-        { text: 'suggests', rationale: '“suggest that …” is more measured and precise than “say”.' },
-        { text: 'indicates', rationale: '“indicate that …” points to evidence rather than merely “saying”.' },
-        { text: 'contends', rationale: '“contend that …” asserts a claim with conviction.' },
-        { text: 'maintains', rationale: '“maintain that …” asserts a held position.' },
-      ],
-      distractors: [
-        { text: 'gives', rationale: 'Uncollocational.' },
-        { text: 'does', rationale: 'Even weaker.' },
-        { text: 'gets', rationale: 'Wrong register and collocation.' },
-      ],
-    },
-    {
-      weak: 'points out',
-      strong: [
-        { text: 'stresses', rationale: '“stress that …” gives the point real emphasis.' },
-        { text: 'emphasises', rationale: '“emphasise that …” foregrounds the point deliberately.' },
-        { text: 'underscores', rationale: '“underscore that …” drives the point home.' },
-        { text: 'highlights', rationale: '“highlight that …” singles the point out for attention.' },
-      ],
-      distractors: [
-        { text: 'gives', rationale: 'Uncollocational.' },
-        { text: 'does', rationale: 'Even weaker.' },
-        { text: 'gets', rationale: 'Wrong register and collocation.' },
-      ],
-    },
-    {
-      weak: 'goes to show',
-      strong: [
-        { text: 'demonstrates', rationale: '“demonstrate that …” is the precise, formal verb.' },
-        { text: 'confirms', rationale: '“confirm that …” asserts the evidence settles the matter.' },
-        { text: 'proves', rationale: '“prove that …” claims conclusive evidence.' },
-        { text: 'illustrates', rationale: '“illustrate that …” shows it with a clear case.' },
-      ],
-      distractors: [
-        { text: 'says', rationale: 'Vague and colourless.' },
-        { text: 'gives', rationale: 'Uncollocational.' },
-        { text: 'makes', rationale: 'Even weaker.' },
-      ],
-    },
-    {
-      weak: 'tells us',
-      strong: [
-        { text: 'reminds us', rationale: '“remind us that …” is precise and idiomatic.' },
-        { text: 'warns us', rationale: '“warn us that …” conveys urgency the bland “tell” lacks.' },
-        { text: 'alerts us', rationale: '“alert us that …” signals something we must notice.' },
-        { text: 'assures us', rationale: '“assure us that …” conveys confident reassurance.' },
-      ],
-      distractors: [
-        { text: 'gives us', rationale: 'Uncollocational.' },
-        { text: 'does us', rationale: 'Not idiomatic.' },
-        { text: 'gets us', rationale: 'Wrong collocation.' },
-      ],
-    },
-    {
-      weak: 'mentions',
-      strong: [
-        { text: 'notes', rationale: '“note that …” is crisper than the offhand “mention”.' },
-        { text: 'observes', rationale: '“observe that …” frames it as a considered remark.' },
-        { text: 'remarks', rationale: '“remark that …” is more deliberate than “mention”.' },
-        { text: 'acknowledges', rationale: '“acknowledge that …” concedes the point explicitly.' },
-      ],
-      distractors: [
-        { text: 'gives', rationale: 'Uncollocational.' },
-        { text: 'does', rationale: 'Even weaker.' },
-        { text: 'gets', rationale: 'Wrong register and collocation.' },
-      ],
-    },
-    {
-      weak: 'thinks',
-      strong: [
-        { text: 'maintains', rationale: '“maintain that …” asserts a position held firmly.' },
-        { text: 'contends', rationale: '“contend that …” states a claim with conviction.' },
-        { text: 'holds', rationale: '“hold that …” is the precise verb for a reasoned view.' },
-        { text: 'argues', rationale: '“argue that …” presents a reasoned claim.' },
-      ],
-      distractors: [
-        { text: 'gives', rationale: 'Uncollocational.' },
-        { text: 'does', rationale: 'Even weaker.' },
-        { text: 'gets', rationale: 'Wrong register and collocation.' },
+        { text: 'alleges', rationale: 'To allege is to claim without proof — the opposite of showing with evidence.' },
+        { text: 'assumes', rationale: 'To assume is to take for granted, not to evidence.' },
+        { text: 'presumes', rationale: 'Implies an unfounded assumption rather than a demonstrated finding.' },
+        { text: 'speculates', rationale: 'Mere guessing — not something the evidence “shows”.' },
+        { text: 'denies', rationale: 'The opposite: to deny is to reject, not to show.' },
+        { text: 'disputes', rationale: 'To dispute is to challenge the finding, not to demonstrate it.' },
       ],
     },
   ],
@@ -650,20 +581,22 @@ function shuffle(rng, arr){
 function generateVerbMc(seed){
   const rng = makeRng(seed);
   const subject = pick(rng, VERB_BANK.subjects);
-  const frame = pick(rng, VERB_BANK.frames);
+  const family = pick(rng, VERB_BANK.families);
   const topic = pick(rng, VERB_BANK.topics);
-  const correct = pick(rng, frame.strong);
+  const weak = pick(rng, family.weak);
+  const correct = pick(rng, family.correct);
+  const distractors = shuffle(rng, family.distractors).slice(0, 3);
   const options = shuffle(rng, [
     { text: correct.text, correct: true, rationale: correct.rationale },
-    ...frame.distractors.map(d => ({ text: d.text, correct: false, rationale: d.rationale })),
+    ...distractors.map(d => ({ text: d.text, correct: false, rationale: d.rationale })),
   ]);
   return {
     id: 'gen-verben-' + seed,
     area: 'verben',
     type: 'mc',
     instruction: 'Replace the weak verb in bold with the most precise alternative.',
-    prompt: subject + ' ' + frame.weak + ' ' + topic + '.',
-    weak: frame.weak,
+    prompt: subject + ' ' + weak + ' ' + topic + '.',
+    weak: weak,
     options,
   };
 }
@@ -1339,16 +1272,27 @@ test('all three areas expose a practice panel', () => {
 test('banks are well stocked for variety', () => {
   assert(VERB_BANK.subjects.length >= 18, 'subjects ' + VERB_BANK.subjects.length);
   assert(VERB_BANK.topics.length >= 18, 'topics ' + VERB_BANK.topics.length);
-  assert(VERB_BANK.frames.length >= 8, 'frames ' + VERB_BANK.frames.length);
+  const weakForms = VERB_BANK.families.reduce((n, f) => n + f.weak.length, 0);
+  assert(weakForms >= 8, 'weak verb forms ' + weakForms);
   assert(COHESION_BANK.pairs.length >= 20, 'pairs ' + COHESION_BANK.pairs.length);
   assert(COMBINE_BANK.length >= 28, 'sets ' + COMBINE_BANK.length);
 });
-test('every verb frame has 3 distractors, >=2 strong, all with text + rationale', () => {
-  VERB_BANK.frames.forEach((f, i) => {
-    assert(f.distractors.length === 3, 'frame ' + i + ' (' + f.weak + ') distractors=' + f.distractors.length);
-    assert(f.strong.length >= 2, 'frame ' + i + ' (' + f.weak + ') strong=' + f.strong.length);
-    [].concat(f.strong, f.distractors).forEach((o, j) => assert(o.text && o.rationale, 'frame ' + i + ' option ' + j + ' missing text/rationale'));
+test('verb families: pools well-formed and correct/distractor sets disjoint', () => {
+  assert(VERB_BANK.families.length >= 2, 'families ' + VERB_BANK.families.length);
+  VERB_BANK.families.forEach((f, i) => {
+    assert(f.weak.length >= 1, 'family ' + i + ' needs weak forms');
+    assert(f.correct.length >= 2, 'family ' + i + ' correct=' + f.correct.length);
+    assert(f.distractors.length >= 3, 'family ' + i + ' distractors=' + f.distractors.length);
+    const cset = new Set(f.correct.map(o => o.text));
+    f.distractors.forEach(d => assert(!cset.has(d.text), 'family ' + i + ' distractor "' + d.text + '" also a correct answer'));
+    [].concat(f.correct, f.distractors).forEach((o, j) => assert(o.text && o.rationale, 'family ' + i + ' option ' + j + ' missing text/rationale'));
   });
+});
+test('generated verb mc has no weak filler options (distractors are strong verbs)', () => {
+  const WEAK = ['gets', 'get', 'got', 'does', 'do', 'gives', 'give', 'makes', 'make', 'says', 'say', 'tells', 'tell'];
+  for (let s = 0; s < 24; s++){
+    generateVerbMc(s).options.forEach(o => assert(WEAK.indexOf(o.text) === -1, 'seed ' + s + ' has weak option "' + o.text + '"'));
+  }
 });
 test('every cohesion relation has a label and pairs reference known relations', () => {
   assert(Object.keys(COHESION_BANK.connectors).length >= 4, 'need >=4 relations for distractors');
