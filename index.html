@@ -1,0 +1,1259 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Writing Skills Trainer — LK English</title>
+<style>
+:root{
+  --bg:#f6f7f9; --card:#ffffff; --ink:#1c2024; --muted:#5b636b;
+  --accent:#0e7c86; --accent-ink:#0a5e66;
+  --ok-bg:#e6f4ea; --ok-ink:#137333; --ok-br:#9bd3ab;
+  --no-bg:#fdeceb; --no-ink:#b3261e; --no-br:#f1b4b0;
+  --line:#e4e7eb; --radius:14px;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  line-height:1.6; font-size:18px;
+}
+#app{max-width:820px; margin:0 auto; padding:2rem 1.25rem 4rem}
+h1{font-size:2rem; margin:.2rem 0 .25rem}
+.lead{color:var(--muted); margin:0 0 2rem}
+.area{
+  background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
+  padding:1.5rem 1.5rem 1.25rem; margin:0 0 1.5rem;
+}
+.area-head{display:flex; align-items:baseline; justify-content:space-between; gap:1rem}
+.area-head h2{font-size:1.35rem; margin:0; color:var(--accent-ink)}
+.score{font-size:.95rem; color:var(--muted); white-space:nowrap}
+.blurb{margin:.25rem 0 1.25rem; color:var(--muted)}
+.exercise{border-top:1px solid var(--line); padding:1.25rem 0}
+.exercise:last-child{padding-bottom:0}
+.instruction{font-weight:600; margin:0 0 .6rem}
+.prompt,.gap-intro{
+  background:#f1f4f6; border-left:3px solid var(--accent); border-radius:8px;
+  padding:.7rem .9rem; margin:0 0 .9rem;
+}
+.prompt strong{color:var(--no-ink)}
+.options{display:flex; flex-direction:column; gap:.55rem}
+.opt{
+  text-align:left; font:inherit; color:var(--ink); cursor:pointer;
+  background:#fff; border:1px solid var(--line); border-radius:10px; padding:.65rem .85rem;
+  transition:border-color .15s, background .15s, transform .05s;
+}
+.opt:hover:not(:disabled){border-color:var(--accent); transform:translateY(-1px)}
+.opt:disabled{cursor:default}
+.opt.is-correct{background:var(--ok-bg); border-color:var(--ok-br); color:var(--ok-ink); font-weight:600}
+.opt.is-incorrect{background:var(--no-bg); border-color:var(--no-br); color:var(--no-ink)}
+.feedback{margin-top:.7rem; padding:.6rem .8rem; border-radius:8px; background:#f1f4f6; color:var(--muted)}
+.gap-select{
+  font:inherit; padding:.15rem 1.6rem .15rem .5rem; border-radius:8px;
+  border:1px solid var(--accent); background:#fff; color:var(--accent-ink); margin:0 .15rem;
+}
+.gap-select.is-correct{border-color:var(--ok-br); background:var(--ok-bg); color:var(--ok-ink)}
+.gap-select.is-incorrect{border-color:var(--no-br); background:var(--no-bg); color:var(--no-ink)}
+.gap-feedback{margin-top:.7rem; display:flex; flex-direction:column; gap:.4rem}
+.gap-feedback .is-correct{color:var(--ok-ink)}
+.gap-feedback .is-incorrect{color:var(--no-ink)}
+textarea.answer{
+  width:100%; font:inherit; padding:.7rem .85rem; border:1px solid var(--line);
+  border-radius:10px; resize:vertical; margin-bottom:.7rem;
+}
+textarea.answer:focus{outline:2px solid var(--accent); border-color:var(--accent)}
+.show-model{
+  font:inherit; cursor:pointer; color:#fff; background:var(--accent); border:0;
+  border-radius:10px; padding:.55rem 1rem;
+}
+.show-model:hover:not(:disabled){background:var(--accent-ink)}
+.show-model:disabled{opacity:.5; cursor:default}
+.model{
+  margin-top:.9rem; background:var(--ok-bg); border:1px solid var(--ok-br);
+  border-radius:10px; padding:.85rem 1rem;
+}
+.model h4{margin:0 0 .4rem; color:var(--ok-ink)}
+.model-answer{margin:.25rem 0; font-weight:600}
+.technique{margin:.6rem 0 0; color:var(--muted); font-size:.95rem}
+.open-tools{display:flex; gap:.6rem; margin-bottom:.35rem}
+.check-answer{
+  font:inherit; cursor:pointer; color:var(--accent-ink); background:#fff;
+  border:1px solid var(--accent); border-radius:10px; padding:.5rem .9rem;
+}
+.check-answer:hover{background:var(--ok-bg)}
+.check-caption{margin:.1rem 0 .5rem; font-size:.85rem; color:var(--muted)}
+.check-results{display:flex; flex-direction:column; gap:.35rem; margin-bottom:.6rem}
+.check-results .is-correct{color:var(--ok-ink)}
+.check-results .is-incorrect{color:var(--no-ink)}
+.check-results .check-empty{color:var(--muted); font-style:italic}
+.compare-head{margin:.8rem 0 .2rem}
+.compare-list{margin:.1rem 0 0; padding-left:1.2rem; color:var(--muted)}
+.compare-list li{margin:.1rem 0}
+.show-model{margin-top:.2rem}
+.practice{border-top:1px dashed var(--line); margin-top:1.1rem; padding-top:1rem}
+.practice-toggle{
+  font:inherit; cursor:pointer; color:#fff; background:var(--accent); border:0;
+  border-radius:10px; padding:.55rem 1rem; font-weight:600;
+}
+.practice-toggle:hover{background:var(--accent-ink)}
+.practice-panel{margin-top:.9rem}
+.practice-tally{margin:.1rem 0 .8rem; font-size:.95rem; color:var(--muted)}
+.practice-slot .exercise{border-top:0; padding-top:0}
+.practice-next{
+  font:inherit; cursor:pointer; color:var(--accent-ink); background:#fff;
+  border:1px solid var(--accent); border-radius:10px; padding:.5rem 1rem; margin-top:.4rem;
+}
+.practice-next:hover{background:var(--ok-bg)}
+/* self-test panel */
+.test-panel{font-family:ui-monospace,Menlo,Consolas,monospace; padding:1rem; line-height:1.7}
+.t-summary{font-weight:700; margin-bottom:.5rem}
+.t-pass{color:var(--ok-ink)}
+.t-fail{color:var(--no-ink)}
+@media (max-width:560px){
+  body{font-size:17px}
+  #app{padding:1.25rem .9rem 3rem}
+  .area-head{flex-direction:column; gap:.1rem}
+}
+</style>
+</head>
+<body>
+<main id="app"></main>
+<script>
+/* ============ DATA ============ */
+const AREAS = [
+  { id: 'satzbau',   title: 'Sentence Structure', blurb: 'Combine choppy clauses into varied, hierarchical sentences.' },
+  { id: 'verben',    title: 'Verb Precision',     blurb: 'Trade weak, all-purpose verbs for vivid, exact ones.' },
+  { id: 'kohaerenz', title: 'Cohesion',           blurb: 'Link ideas with connectors that match the logical relation.' },
+];
+
+const EXERCISES = [
+  {
+    id: 'st-1', area: 'satzbau', type: 'mc',
+    instruction: 'Choose the most effective and grammatically correct combination.',
+    prompt: 'The negotiations dragged on for weeks. Neither side was willing to compromise. A settlement was eventually reached.',
+    options: [
+      { text: 'The negotiations dragged on for weeks, neither side was willing to compromise, a settlement was eventually reached.', correct: false, rationale: 'Comma splice: three independent clauses joined only by commas.' },
+      { text: 'Dragging on for weeks because neither side was willing to compromise, a settlement was eventually reached.', correct: false, rationale: 'Dangling modifier: the participle attaches to “a settlement”, which is not what dragged on.' },
+      { text: 'Although the negotiations dragged on for weeks, with neither side willing to compromise, a settlement was eventually reached.', correct: true, rationale: 'Concessive clause + absolute construction (with …): clear, idiomatic and varied.' },
+      { text: 'The negotiations dragged on for weeks and neither side was willing to compromise but a settlement was eventually reached.', correct: false, rationale: 'Grammatical but stylistically flat — mere and/but coordination with no hierarchy.' },
+    ],
+  },
+  {
+    id: 'st-2', area: 'satzbau', type: 'open',
+    instruction: 'Weld these three statements into a single, sophisticated sentence.',
+    prompt: 'Many commuters rely on the railway. The service is frequently delayed. They have no real alternative.',
+    models: [
+      'Although the service is frequently delayed, many commuters, having no real alternative, continue to rely on the railway.',
+      'Many commuters, despite frequent delays and for want of any real alternative, continue to rely on the railway.',
+    ],
+    technique: 'Concessive subordination + participle/prepositional construction: subordinate the minor ideas, keep one main clause.',
+    checks: [
+      { type: 'minWords', n: 8, label: 'Wrote a full sentence', hint: 'Write your combined sentence first.' },
+      { type: 'maxSentences', n: 1, label: 'Combined into a single sentence', hint: 'Aim for ONE sentence — yours still ends with more than one full stop.' },
+      { type: 'regexPresent', re: /\b(although|though|despite|having|while|because|since|whereas|which|who|whose)\b|,\s*with\b/i, label: 'Used subordination or a participle', hint: 'Subordinate the minor ideas (although…, having…, which…) instead of three main clauses.' },
+    ],
+  },
+  {
+    id: 'vb-1', area: 'verben', type: 'mc',
+    instruction: 'Replace the weak verb in bold with the most precise alternative.',
+    prompt: 'The article makes the argument that social media erodes attention spans.',
+    weak: 'makes',
+    options: [
+      { text: 'advances', correct: true,  rationale: '“advance an argument” — a precise, idiomatic collocation.' },
+      { text: 'gives',    correct: false, rationale: '“give an argument” is unidiomatic and vague.' },
+      { text: 'does',     correct: false, rationale: 'Even weaker and uncollocational.' },
+      { text: 'makes',    correct: false, rationale: 'The original, colourless verb.' },
+    ],
+  },
+  {
+    id: 'vb-2', area: 'verben', type: 'open',
+    instruction: 'Upgrade this pale sentence: replace every weak verb with a precise, vivid one.',
+    prompt: 'The report makes the point that emissions have got higher and says we must do something soon.',
+    models: [
+      'The report contends that emissions have soared and urges immediate action.',
+      'The report stresses that emissions have climbed sharply and calls for prompt measures.',
+    ],
+    technique: 'make the point → contend/stress · get higher → soar/climb · say → urge/call for · do something → take action.',
+    checks: [
+      { type: 'minWords', n: 6, label: 'Wrote a rewrite', hint: 'Write your upgraded sentence first.' },
+      { type: 'regexAbsent', re: /\bmakes?\s+the\s+point\b/i, label: 'Replaced “make the point”', hint: '“make the point” is still there — try contend / stress / argue.' },
+      { type: 'regexAbsent', re: /\b(get|gets|got|gotten)\s+higher\b/i, label: 'Replaced “get higher”', hint: '“got higher” remains — try soared / climbed / surged.' },
+      { type: 'regexAbsent', re: /\bsays?\b/i, label: 'Replaced “say”', hint: '“say(s)” remains — try urges / calls for / stresses.' },
+      { type: 'regexAbsent', re: /\bdo\s+something\b/i, label: 'Replaced “do something”', hint: '“do something” is vague — try take action / act decisively.' },
+      { type: 'regexPresent', re: /\b(contend|stress|argue|maintain|assert|claim|soar|climb|surge|rise|risen|urge|call|demand|press|warn)\w*\b/i, label: 'Brought in stronger verbs', hint: 'Use vivid verbs (contend, soar, urge, …).' },
+    ],
+  },
+  {
+    id: 'ko-1', area: 'kohaerenz', type: 'gap',
+    instruction: 'Insert the connector that fits the logical relation.',
+    intro: 'Remote work has undeniably boosted productivity for many firms. ⟦1⟧, it has also blurred the boundary between professional and private life. ⟦2⟧, a growing number of employees report difficulty “switching off” after hours. Employers, ⟦3⟧, are now experimenting with “right to disconnect” policies.',
+    gaps: [
+      { options: [
+        { text: 'However',   correct: true,  rationale: 'Contrast — it offsets the benefit against the downside.' },
+        { text: 'Therefore', correct: false, rationale: 'Signals consequence, but no cause–effect link is meant here.' },
+        { text: 'Likewise',  correct: false, rationale: 'Signals similarity, yet the two ideas are opposed.' },
+      ] },
+      { options: [
+        { text: 'Indeed',      correct: true,  rationale: 'Reinforces and illustrates the preceding claim.' },
+        { text: 'Nonetheless', correct: false, rationale: 'Marks contrast, but the sentence confirms rather than counters.' },
+        { text: 'By contrast', correct: false, rationale: 'Marks opposition, which is not the relation here.' },
+      ] },
+      { options: [
+        { text: 'consequently', correct: true,  rationale: 'Result — the policy follows from the problem just described.' },
+        { text: 'however',      correct: false, rationale: 'Marks contrast, but this is a consequence.' },
+        { text: 'for instance', correct: false, rationale: 'Introduces an example, not a result.' },
+      ] },
+    ],
+  },
+  {
+    id: 'ko-2', area: 'kohaerenz', type: 'open',
+    instruction: 'Weld these stand-alone statements into one coherent mini-paragraph using precise cohesive devices (not just and/but/so).',
+    prompt: 'Cities are expanding rapidly. Green spaces are shrinking. Urban planners are under pressure. Some cities now require rooftop gardens on new buildings.',
+    models: [
+      'As cities expand rapidly, their green spaces are steadily shrinking; consequently, urban planners find themselves under mounting pressure. In response, some cities now require rooftop gardens on all new buildings.',
+    ],
+    technique: 'Temporal/causal subordination (as), consequence (consequently) and response (in response) replace flat coordination; the semicolon links closely related clauses.',
+    checks: [
+      { type: 'minWords', n: 10, label: 'Wrote a paragraph', hint: 'Write your linked paragraph first.' },
+      { type: 'maxSentences', n: 3, label: 'Linked the four statements', hint: 'Four separate sentences — combine and link them (aim for ≤ 3).' },
+      { type: 'regexPresent', re: /\b(as|since|because|while|whereas|consequently|therefore|thus|hence|owing to|given that|in response|as a result)\b|;/i, label: 'Used precise cohesive devices', hint: 'Mark the logic with connectors (as, consequently, in response…) or a semicolon — not just and/but/so.' },
+    ],
+  },
+];
+
+const VERB_BANK = {
+  subjects: [
+    'The article', 'The study', 'The report', 'The editorial', 'The author',
+    'Her essay', 'The survey', 'The documentary', 'The columnist', 'The review',
+    'The op-ed', 'The white paper', 'The professor', 'The analyst', 'The investigation',
+    'The lecture', 'The paper', 'The critic', 'The commentator', 'The exposé',
+  ],
+  topics: [
+    'that social media erodes attention spans',
+    'that remote work boosts long-term productivity',
+    'that the reform will do more harm than good',
+    'that air quality has deteriorated sharply',
+    'that the evidence remains inconclusive',
+    'that streaming has reshaped the music industry',
+    'that the policy disproportionately burdens the poor',
+    'that automation will displace many routine jobs',
+    'that urban green spaces improve public health',
+    'that the data have been widely misinterpreted',
+    'that artificial intelligence will transform the labour market',
+    'that the housing crisis is deepening in major cities',
+    'that misinformation now spreads faster than verified facts',
+    'that mass tourism is straining fragile ecosystems',
+    'that the gig economy erodes long-term job security',
+    'that excessive screen time disrupts adolescent sleep',
+    'that biodiversity is declining at an alarming rate',
+    'that renewable capacity has outpaced official forecasts',
+    'that the reforms have stalled amid political wrangling',
+    'that nostalgia increasingly shapes consumer culture',
+  ],
+  frames: [
+    {
+      weak: 'makes the point',
+      strong: [
+        { text: 'contends', rationale: '“contend that …” is a precise, idiomatic way to assert a claim.' },
+        { text: 'argues', rationale: '“argue that …” states a reasoned claim — far stronger than “make the point”.' },
+        { text: 'maintains', rationale: '“maintain that …” asserts a position held firmly.' },
+        { text: 'asserts', rationale: '“assert that …” states a claim with conviction.' },
+      ],
+      distractors: [
+        { text: 'gives', rationale: '“give that …” is not idiomatic.' },
+        { text: 'tells', rationale: 'Claims are not “told” — wrong collocation.' },
+        { text: 'does', rationale: 'Even weaker and uncollocational.' },
+      ],
+    },
+    {
+      weak: 'shows',
+      strong: [
+        { text: 'demonstrates', rationale: '“demonstrate that …” is precise and evidence-based.' },
+        { text: 'reveals', rationale: '“reveal that …” is vivid and exact — more than the colourless “show”.' },
+        { text: 'illustrates', rationale: '“illustrate that …” shows with a clear example.' },
+        { text: 'underscores', rationale: '“underscore that …” emphasises the point.' },
+      ],
+      distractors: [
+        { text: 'says', rationale: 'Vague and colourless.' },
+        { text: 'gives', rationale: 'Uncollocational here.' },
+        { text: 'makes', rationale: 'Even weaker.' },
+      ],
+    },
+    {
+      weak: 'says',
+      strong: [
+        { text: 'suggests', rationale: '“suggest that …” is more measured and precise than “say”.' },
+        { text: 'indicates', rationale: '“indicate that …” points to evidence rather than merely “saying”.' },
+        { text: 'contends', rationale: '“contend that …” asserts a claim with conviction.' },
+        { text: 'maintains', rationale: '“maintain that …” asserts a held position.' },
+      ],
+      distractors: [
+        { text: 'gives', rationale: 'Uncollocational.' },
+        { text: 'does', rationale: 'Even weaker.' },
+        { text: 'gets', rationale: 'Wrong register and collocation.' },
+      ],
+    },
+    {
+      weak: 'points out',
+      strong: [
+        { text: 'stresses', rationale: '“stress that …” gives the point real emphasis.' },
+        { text: 'emphasises', rationale: '“emphasise that …” foregrounds the point deliberately.' },
+        { text: 'underscores', rationale: '“underscore that …” drives the point home.' },
+        { text: 'highlights', rationale: '“highlight that …” singles the point out for attention.' },
+      ],
+      distractors: [
+        { text: 'gives', rationale: 'Uncollocational.' },
+        { text: 'does', rationale: 'Even weaker.' },
+        { text: 'gets', rationale: 'Wrong register and collocation.' },
+      ],
+    },
+    {
+      weak: 'goes to show',
+      strong: [
+        { text: 'demonstrates', rationale: '“demonstrate that …” is the precise, formal verb.' },
+        { text: 'confirms', rationale: '“confirm that …” asserts the evidence settles the matter.' },
+        { text: 'proves', rationale: '“prove that …” claims conclusive evidence.' },
+        { text: 'illustrates', rationale: '“illustrate that …” shows it with a clear case.' },
+      ],
+      distractors: [
+        { text: 'says', rationale: 'Vague and colourless.' },
+        { text: 'gives', rationale: 'Uncollocational.' },
+        { text: 'makes', rationale: 'Even weaker.' },
+      ],
+    },
+    {
+      weak: 'tells us',
+      strong: [
+        { text: 'reminds us', rationale: '“remind us that …” is precise and idiomatic.' },
+        { text: 'warns us', rationale: '“warn us that …” conveys urgency the bland “tell” lacks.' },
+        { text: 'alerts us', rationale: '“alert us that …” signals something we must notice.' },
+        { text: 'assures us', rationale: '“assure us that …” conveys confident reassurance.' },
+      ],
+      distractors: [
+        { text: 'gives us', rationale: 'Uncollocational.' },
+        { text: 'does us', rationale: 'Not idiomatic.' },
+        { text: 'gets us', rationale: 'Wrong collocation.' },
+      ],
+    },
+    {
+      weak: 'mentions',
+      strong: [
+        { text: 'notes', rationale: '“note that …” is crisper than the offhand “mention”.' },
+        { text: 'observes', rationale: '“observe that …” frames it as a considered remark.' },
+        { text: 'remarks', rationale: '“remark that …” is more deliberate than “mention”.' },
+        { text: 'acknowledges', rationale: '“acknowledge that …” concedes the point explicitly.' },
+      ],
+      distractors: [
+        { text: 'gives', rationale: 'Uncollocational.' },
+        { text: 'does', rationale: 'Even weaker.' },
+        { text: 'gets', rationale: 'Wrong register and collocation.' },
+      ],
+    },
+    {
+      weak: 'thinks',
+      strong: [
+        { text: 'maintains', rationale: '“maintain that …” asserts a position held firmly.' },
+        { text: 'contends', rationale: '“contend that …” states a claim with conviction.' },
+        { text: 'holds', rationale: '“hold that …” is the precise verb for a reasoned view.' },
+        { text: 'argues', rationale: '“argue that …” presents a reasoned claim.' },
+      ],
+      distractors: [
+        { text: 'gives', rationale: 'Uncollocational.' },
+        { text: 'does', rationale: 'Even weaker.' },
+        { text: 'gets', rationale: 'Wrong register and collocation.' },
+      ],
+    },
+  ],
+};
+
+const COHESION_BANK = {
+  connectors: {
+    contrast:      ['However', 'Nevertheless', 'Yet', 'Even so', 'Still'],
+    consequence:   ['Therefore', 'Consequently', 'As a result', 'Hence', 'Thus'],
+    addition:      ['Moreover', 'Furthermore', 'In addition', 'What is more', 'Equally'],
+    emphasis:      ['Indeed', 'In fact', 'Tellingly', 'Crucially'],
+    example:       ['For instance', 'For example', 'To illustrate', 'In particular'],
+    reformulation: ['In other words', 'That is', 'Put simply', 'In essence'],
+  },
+  labels: {
+    contrast: 'a contrast', consequence: 'a consequence', addition: 'an addition',
+    emphasis: 'emphasis', example: 'an example', reformulation: 'a restatement',
+  },
+  pairs: [
+    { a: 'Remote work boosts productivity for many firms', b: 'it blurs the line between professional and private life', relation: 'contrast' },
+    { a: 'The new tax relieves low-income households', b: 'it widens the budget deficit considerably', relation: 'contrast' },
+    { a: 'The policy is unpopular with commuters', b: 'it has cut city-centre congestion dramatically', relation: 'contrast' },
+    { a: 'The author praises the reform', b: 'she overlooks its impact on small businesses', relation: 'contrast' },
+    { a: 'Ticket prices have risen sharply', b: 'attendance has fallen for the third year running', relation: 'consequence' },
+    { a: 'The museum waived its entry fee', b: 'visitor numbers tripled within a month', relation: 'consequence' },
+    { a: 'Air quality has improved since the ban', b: 'hospital admissions for asthma have dropped', relation: 'consequence' },
+    { a: 'Streaming has transformed how we consume music', b: 'it has reshaped how artists earn a living', relation: 'addition' },
+    { a: 'The city expanded its cycle network', b: 'it introduced a fleet of shared e-bikes', relation: 'addition' },
+    { a: 'The report warns of rising sea levels', b: 'it cites flooding in three coastal cities as evidence', relation: 'example' },
+    { a: 'Many species now migrate earlier each spring', b: 'some songbirds breed weeks ahead of historical norms', relation: 'example' },
+    { a: 'The findings are genuinely striking', b: 'they overturn decades of received wisdom', relation: 'emphasis' },
+    { a: 'The app is free to download', b: 'its hidden charges quickly add up', relation: 'contrast' },
+    { a: 'The candidate gave a polished speech', b: 'she dodged every difficult question', relation: 'contrast' },
+    { a: 'The medication relieves the symptoms', b: 'it does nothing to address the cause', relation: 'contrast' },
+    { a: 'The factory shut down overnight', b: 'hundreds of workers were left jobless', relation: 'consequence' },
+    { a: 'Interest rates climbed again', b: 'mortgage demand cooled sharply', relation: 'consequence' },
+    { a: 'The bridge was declared unsafe', b: 'the whole route had to be diverted', relation: 'consequence' },
+    { a: 'The course sharpens analytical skills', b: 'it builds genuine confidence in writing', relation: 'addition' },
+    { a: 'The reform simplifies the tax code', b: 'it closes several long-standing loopholes', relation: 'addition' },
+    { a: 'The results were not merely positive', b: 'they exceeded every prior estimate', relation: 'emphasis' },
+    { a: 'The decision was no minor adjustment', b: 'it overturned the policy entirely', relation: 'emphasis' },
+    { a: 'Several industries now face acute labour shortages', b: 'hospitality cannot fill a third of its vacancies', relation: 'example' },
+    { a: 'Extreme weather is becoming the norm', b: 'three record heatwaves struck in a single summer', relation: 'example' },
+    { a: 'Every household will receive the payment', b: 'the scheme is, in effect, entirely universal', relation: 'reformulation' },
+    { a: 'Sales have collapsed for six straight quarters', b: 'the brand is in freefall', relation: 'reformulation' },
+    { a: 'The rules apply to almost no one in practice', b: 'they are effectively dead letters', relation: 'reformulation' },
+  ],
+};
+
+const COMBINE_BANK = [
+  ['The festival draws thousands of visitors', 'It strains local infrastructure', 'The council has done little to prepare'],
+  ['The novel was a commercial success', 'Critics dismissed it as shallow', 'It won no major awards'],
+  ['Solar power is now cheaper than coal', 'Many regions still subsidise fossil fuels', 'Emissions continue to climb'],
+  ['The start-up grew rapidly', 'It burned through its funding', 'Investors soon grew wary'],
+  ['The river floods almost every spring', 'The town was built on its banks', 'Residents still refuse to relocate'],
+  ['The policy reduced traffic', 'Shop owners complained of lost trade', 'The mayor defended it firmly'],
+  ['The team trained for months', 'They lost in the first round', 'Few had expected the defeat'],
+  ['The app collects vast amounts of data', 'Users rarely read the terms', 'Regulators are beginning to intervene'],
+  ['Electric cars are gaining popularity', 'Charging networks remain patchy', 'Many drivers hesitate to switch'],
+  ['The museum modernised its galleries', 'Older visitors felt alienated', 'Attendance figures barely moved'],
+  ['The legislation passed unanimously', 'Its wording is dangerously vague', 'Lawyers expect years of disputes'],
+  ['Coastal towns depend on summer tourism', 'The season shrinks each year', 'Local economies grow ever more fragile'],
+  ['The author spent a decade on the book', 'It sold only a few hundred copies', 'Critics now hail it as a masterpiece'],
+  ['The vaccine was developed in record time', 'Public trust lagged behind', 'Uptake varied widely between regions'],
+  ['Streaming platforms commission endless content', 'Few titles find a lasting audience', 'Budgets keep climbing regardless'],
+  ['The city banned cars from its centre', 'Shopkeepers feared collapse', 'Footfall has since risen sharply'],
+  ['Remote learning kept schools running', 'Many pupils fell behind', 'The gap between students widened'],
+  ['The company promised carbon neutrality', 'Its emissions have barely fallen', 'Campaigners accuse it of greenwashing'],
+  ['The charity raised a record sum', 'Its running costs have ballooned', 'Less now reaches those in need'],
+  ['The new stadium was finished on time', 'It ran wildly over budget', 'Taxpayers will foot the bill for years'],
+  ['The diet showed promising early results', 'The trial followed only twelve people', 'Experts urge real caution'],
+  ['The town invested heavily in broadband', 'Few residents signed up', 'The network now runs at a loss'],
+  ['The film was panned by critics', 'Audiences flocked to it', 'It became the biggest hit of the year'],
+  ['The law was meant to curb pollution', 'Enforcement is almost nonexistent', 'Air quality has scarcely improved'],
+  ['The bakery uses only local ingredients', 'Its prices are steep', 'Loyal customers keep coming back'],
+  ['The conference attracted leading experts', 'The venue was poorly chosen', 'Many sessions were half empty'],
+  ['Wages have stagnated for a decade', 'The cost of living keeps climbing', 'Households are quietly falling behind'],
+  ['The software promised to save time', 'Staff found it baffling', 'Productivity actually dropped'],
+  ['The park was restored at great expense', 'Vandalism soon returned', 'The council has run out of patience'],
+  ['The startup attracted glowing press', 'Its finances told a different story', 'Investors pulled out within months'],
+  ['The vaccine rollout began smoothly', 'Rural areas were left waiting', 'Coverage remains deeply uneven'],
+  ['The museum acquired a famous painting', 'Doubts about its authenticity grew', 'It now hangs behind a cautious label'],
+];
+
+/* ============ HELPERS ============ */
+function el(tag, attrs, children){
+  const n = document.createElement(tag);
+  if (attrs) for (const k in attrs){
+    if (k === 'class') n.className = attrs[k];
+    else if (k === 'html') n.innerHTML = attrs[k];
+    else if (k === 'dataset') for (const d in attrs[k]) n.dataset[d] = attrs[k][d];
+    else n.setAttribute(k, attrs[k]);
+  }
+  if (children != null){
+    (Array.isArray(children) ? children : [children]).forEach(c => {
+      if (c == null) return;
+      n.appendChild(typeof c === 'string' ? document.createTextNode(c) : c);
+    });
+  }
+  return n;
+}
+
+/* ============ VALIDATION ============ */
+function validateExercise(ex){
+  const errors = [];
+  const areaIds = (typeof AREAS !== 'undefined') ? AREAS.map(a => a.id) : [];
+  if (!ex.id) errors.push('missing id');
+  if (!areaIds.includes(ex.area)) errors.push((ex.id || '?') + ': unknown area "' + ex.area + '"');
+  if (!['mc', 'gap', 'open'].includes(ex.type)) errors.push((ex.id || '?') + ': unknown type "' + ex.type + '"');
+  if (!ex.instruction) errors.push((ex.id || '?') + ': missing instruction');
+
+  const checkOptions = (opts, where) => {
+    if (!Array.isArray(opts) || opts.length < 2){ errors.push(where + ': needs >= 2 options'); return; }
+    const nCorrect = opts.filter(o => o.correct === true).length;
+    if (nCorrect !== 1) errors.push(where + ': must have exactly 1 correct option, has ' + nCorrect);
+    opts.forEach((o, i) => {
+      if (!o.text) errors.push(where + ' option ' + i + ': missing text');
+      if (!o.rationale) errors.push(where + ' option ' + i + ': missing rationale');
+    });
+  };
+
+  if (ex.type === 'mc'){
+    if (!ex.prompt) errors.push(ex.id + ': mc missing prompt');
+    checkOptions(ex.options, ex.id + ' mc');
+  } else if (ex.type === 'gap'){
+    if (typeof ex.intro !== 'string') errors.push(ex.id + ': gap missing intro');
+    if (!Array.isArray(ex.gaps) || ex.gaps.length < 1) errors.push(ex.id + ': gap needs gaps[]');
+    const placeholders = (ex.intro.match(/⟦\d+⟧/g) || []).length;
+    if (Array.isArray(ex.gaps) && placeholders !== ex.gaps.length)
+      errors.push(ex.id + ': ' + placeholders + ' placeholders but ' + ex.gaps.length + ' gaps');
+    (ex.gaps || []).forEach((g, i) => checkOptions(g.options, ex.id + ' gap ' + i));
+  } else if (ex.type === 'open'){
+    if (!ex.prompt) errors.push(ex.id + ': open missing prompt');
+    if (!Array.isArray(ex.models) || ex.models.length < 1) errors.push(ex.id + ': open needs models[]');
+    if (!ex.technique) errors.push(ex.id + ': open missing technique');
+    if (Array.isArray(ex.checks)){
+      ex.checks.forEach((c, i) => {
+        if (!['regexPresent', 'regexAbsent', 'maxSentences', 'minWords'].includes(c.type))
+          errors.push(ex.id + ' check ' + i + ': unknown type "' + c.type + '"');
+        if (!c.label) errors.push(ex.id + ' check ' + i + ': missing label');
+        if (!c.hint) errors.push(ex.id + ' check ' + i + ': missing hint');
+        if ((c.type === 'regexPresent' || c.type === 'regexAbsent') && !(c.re instanceof RegExp))
+          errors.push(ex.id + ' check ' + i + ': missing/invalid re');
+        if ((c.type === 'maxSentences' || c.type === 'minWords') && typeof c.n !== 'number')
+          errors.push(ex.id + ' check ' + i + ': missing n');
+      });
+    }
+  }
+  return { ok: errors.length === 0, errors };
+}
+
+function validateAll(list){
+  const errors = [];
+  const seen = new Set();
+  const perArea = {};
+  if (typeof AREAS !== 'undefined') AREAS.forEach(a => { perArea[a.id] = 0; });
+  list.forEach(ex => {
+    if (seen.has(ex.id)) errors.push('duplicate id ' + ex.id);
+    seen.add(ex.id);
+    if (ex.area in perArea) perArea[ex.area]++;
+    const r = validateExercise(ex);
+    if (!r.ok) errors.push.apply(errors, r.errors);
+  });
+  return { ok: errors.length === 0, errors, count: list.length, perArea };
+}
+
+/* ============ GRADING ============ */
+function gradeMc(ex, chosenIndex){
+  const correctIndex = ex.options.findIndex(o => o.correct);
+  const chosen = ex.options[chosenIndex];
+  return {
+    correct: chosenIndex === correctIndex,
+    correctIndex,
+    rationale: chosen ? chosen.rationale : '',
+    correctRationale: ex.options[correctIndex].rationale,
+    correctText: ex.options[correctIndex].text,
+  };
+}
+
+function gradeGap(ex, gapIndex, chosenIndex){
+  const opts = ex.gaps[gapIndex].options;
+  const correctIndex = opts.findIndex(o => o.correct);
+  const chosen = opts[chosenIndex];
+  return {
+    correct: chosenIndex === correctIndex,
+    correctIndex,
+    rationale: chosen ? chosen.rationale : '',
+    correctText: opts[correctIndex].text,
+    correctRationale: opts[correctIndex].rationale,
+  };
+}
+
+/* ============ PROGRESS ============ */
+const Progress = {
+  data: {},
+  init(exercises){
+    this.data = {};
+    if (typeof AREAS !== 'undefined') AREAS.forEach(a => { this.data[a.id] = { correct: 0, total: 0 }; });
+    exercises.forEach(ex => {
+      if (!this.data[ex.area]) this.data[ex.area] = { correct: 0, total: 0 };
+      if (ex.type === 'mc') this.data[ex.area].total += 1;
+      else if (ex.type === 'gap') this.data[ex.area].total += ex.gaps.length;
+    });
+  },
+  record(areaId, isCorrect){
+    if (!this.data[areaId]) this.data[areaId] = { correct: 0, total: 0 };
+    if (isCorrect) this.data[areaId].correct += 1;
+  },
+  get(areaId){ return this.data[areaId] || { correct: 0, total: 0 }; },
+};
+
+/* ============ GENERATE ============ */
+function makeRng(seed){
+  let s = seed >>> 0;
+  return function(){
+    s = (s + 0x6D2B79F5) >>> 0;
+    let t = s;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+function pick(rng, arr){ return arr[Math.floor(rng() * arr.length)]; }
+function shuffle(rng, arr){
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--){
+    const j = Math.floor(rng() * (i + 1));
+    const t = a[i]; a[i] = a[j]; a[j] = t;
+  }
+  return a;
+}
+function generateVerbMc(seed){
+  const rng = makeRng(seed);
+  const subject = pick(rng, VERB_BANK.subjects);
+  const frame = pick(rng, VERB_BANK.frames);
+  const topic = pick(rng, VERB_BANK.topics);
+  const correct = pick(rng, frame.strong);
+  const options = shuffle(rng, [
+    { text: correct.text, correct: true, rationale: correct.rationale },
+    ...frame.distractors.map(d => ({ text: d.text, correct: false, rationale: d.rationale })),
+  ]);
+  return {
+    id: 'gen-verben-' + seed,
+    area: 'verben',
+    type: 'mc',
+    instruction: 'Replace the weak verb in bold with the most precise alternative.',
+    prompt: subject + ' ' + frame.weak + ' ' + topic + '.',
+    weak: frame.weak,
+    options,
+  };
+}
+function generateCohesionMc(seed){
+  const rng = makeRng(seed);
+  const pair = pick(rng, COHESION_BANK.pairs);
+  const correctWord = pick(rng, COHESION_BANK.connectors[pair.relation]);
+  const others = shuffle(rng, Object.keys(COHESION_BANK.connectors).filter(r => r !== pair.relation)).slice(0, 3);
+  const options = shuffle(rng, [
+    { text: correctWord, correct: true, rationale: 'Signals ' + COHESION_BANK.labels[pair.relation] + ' — the relation between the two statements.' },
+    ...others.map(r => ({ text: pick(rng, COHESION_BANK.connectors[r]), correct: false, rationale: 'Signals ' + COHESION_BANK.labels[r] + ', not the relation here.' })),
+  ]);
+  return {
+    id: 'gen-kohaerenz-' + seed,
+    area: 'kohaerenz',
+    type: 'mc',
+    instruction: 'Choose the connector that best fits the logical relation.',
+    prompt: pair.a + '. ___, ' + pair.b + '.',
+    options,
+  };
+}
+function generateCombineOpen(seed){
+  const rng = makeRng(seed);
+  const set = pick(rng, COMBINE_BANK);
+  return {
+    id: 'gen-satzbau-' + seed,
+    area: 'satzbau',
+    type: 'open',
+    instruction: 'Weld these statements into a single, sophisticated sentence.',
+    prompt: set.join('. ') + '.',
+    models: [],
+    technique: 'Subordinate the minor ideas (although…, having…, which…, despite…) and keep one main clause.',
+    checks: [
+      { type: 'minWords', n: 10, label: 'Wrote a full sentence', hint: 'Write your combined sentence first.' },
+      { type: 'maxSentences', n: 1, label: 'Combined into a single sentence', hint: 'Aim for ONE sentence — yours still ends with more than one full stop.' },
+      { type: 'regexPresent', re: /\b(although|though|despite|having|while|because|since|whereas|which|who|whose)\b|,\s*with\b/i, label: 'Used subordination or a participle', hint: 'Subordinate the minor ideas (although…, having…, which…) instead of separate main clauses.' },
+    ],
+  };
+}
+
+/* ============ RENDER ============ */
+/* --- open-task heuristic checks (pure) --- */
+function countSentences(text){
+  const m = (text || '').match(/[.!?]+(\s|$)/g);
+  if (m) return m.length;
+  return (text || '').trim() ? 1 : 0;
+}
+function runOpenCheck(check, text){
+  if (check.type === 'regexPresent') return check.re.test(text);
+  if (check.type === 'regexAbsent') return !check.re.test(text);
+  if (check.type === 'maxSentences') return countSentences(text) <= check.n;
+  if (check.type === 'minWords') return text.trim().split(/\s+/).filter(Boolean).length >= check.n;
+  return true;
+}
+function checkOpen(ex, text){
+  const t = (text || '').trim();
+  if (!t) return { empty: true, results: [] };
+  return { empty: false, results: (ex.checks || []).map(c => ({ pass: runOpenCheck(c, t), label: c.label, hint: c.hint })) };
+}
+
+function promptNode(prompt, weak){
+  if (!weak || prompt.indexOf(weak) === -1) return el('p', { class: 'prompt' }, prompt);
+  const i = prompt.indexOf(weak);
+  return el('p', { class: 'prompt' }, [
+    prompt.slice(0, i),
+    el('strong', null, weak),
+    prompt.slice(i + weak.length),
+  ]);
+}
+
+function renderMc(ex, cfg){
+  cfg = cfg || {};
+  const track = cfg.trackProgress !== false;
+  const node = el('div', { class: 'exercise mc', dataset: { id: ex.id } });
+  node.appendChild(el('p', { class: 'instruction' }, ex.instruction));
+  node.appendChild(promptNode(ex.prompt, ex.weak));
+  const opts = el('div', { class: 'options' });
+  const feedback = el('div', { class: 'feedback', hidden: 'hidden' });
+  const buttons = ex.options.map((o, i) => {
+    const b = el('button', { class: 'opt', type: 'button' }, o.text);
+    b.addEventListener('click', () => {
+      const r = gradeMc(ex, i);
+      buttons.forEach(btn => { btn.disabled = true; });
+      b.classList.add(r.correct ? 'is-correct' : 'is-incorrect');
+      if (!r.correct) buttons[r.correctIndex].classList.add('is-correct');
+      feedback.hidden = false;
+      feedback.textContent = (r.correct ? '✓ ' : '✗ ') + r.rationale +
+        (r.correct ? '' : ' — Correct: “' + r.correctText + '”. ' + r.correctRationale);
+      if (track){
+        Progress.record(ex.area, r.correct);
+        if (typeof updateScore === 'function') updateScore(ex.area);
+      }
+      if (cfg.onAnswer) cfg.onAnswer(r.correct);
+    });
+    return b;
+  });
+  buttons.forEach(b => opts.appendChild(b));
+  node.appendChild(opts);
+  node.appendChild(feedback);
+  return node;
+}
+
+function renderGap(ex){
+  const node = el('div', { class: 'exercise gap', dataset: { id: ex.id } });
+  node.appendChild(el('p', { class: 'instruction' }, ex.instruction));
+  const para = el('p', { class: 'gap-intro' });
+  const feedback = el('div', { class: 'gap-feedback' });
+
+  // Split "text ⟦1⟧ text ⟦2⟧ ..." into text fragments and gap indices.
+  const parts = ex.intro.split(/⟦(\d+)⟧/); // [text, "1", text, "2", text, ...]
+  parts.forEach((part, i) => {
+    if (i % 2 === 0){ if (part) para.appendChild(document.createTextNode(part)); return; }
+    const gapIndex = Number(part) - 1;
+    const select = el('select', { class: 'gap-select', 'aria-label': 'Gap ' + part });
+    select.appendChild(el('option', { value: '' }, '— choose —'));
+    ex.gaps[gapIndex].options.forEach((o, oi) => {
+      select.appendChild(el('option', { value: String(oi) }, o.text));
+    });
+    select.addEventListener('change', () => {
+      if (select.value === '') return;
+      const r = gradeGap(ex, gapIndex, Number(select.value));
+      select.disabled = true;
+      select.classList.add(r.correct ? 'is-correct' : 'is-incorrect');
+      const line = el('div', { class: r.correct ? 'is-correct' : 'is-incorrect' },
+        'Gap ' + part + ' ' + (r.correct ? '✓ ' : '✗ ') + r.rationale +
+        (r.correct ? '' : ' — Correct: “' + r.correctText + '”. ' + r.correctRationale));
+      feedback.appendChild(line);
+      Progress.record(ex.area, r.correct);
+      if (typeof updateScore === 'function') updateScore(ex.area);
+    });
+    para.appendChild(select);
+  });
+
+  node.appendChild(para);
+  node.appendChild(feedback);
+  return node;
+}
+
+function renderOpen(ex){
+  const node = el('div', { class: 'exercise open', dataset: { id: ex.id } });
+  node.appendChild(el('p', { class: 'instruction' }, ex.instruction));
+  node.appendChild(el('p', { class: 'prompt' }, ex.prompt));
+  const ta = el('textarea', { class: 'answer', rows: '3', placeholder: 'Write your version…' });
+  node.appendChild(ta);
+
+  // automatic hints on the student's own text
+  const tools = el('div', { class: 'open-tools' });
+  const checkBtn = el('button', { class: 'check-answer', type: 'button' }, 'Check my answer');
+  tools.appendChild(checkBtn);
+  node.appendChild(tools);
+  node.appendChild(el('p', { class: 'check-caption' }, 'Quick automatic hints — not a grade.'));
+  const results = el('div', { class: 'check-results' });
+  node.appendChild(results);
+
+  checkBtn.addEventListener('click', () => {
+    results.innerHTML = '';
+    const r = checkOpen(ex, ta.value);
+    if (r.empty){
+      results.appendChild(el('div', { class: 'check-empty' }, 'Write your answer first, then check.'));
+      return;
+    }
+    r.results.forEach(res => {
+      results.appendChild(el('div', { class: res.pass ? 'is-correct' : 'is-incorrect' },
+        (res.pass ? '✓ ' : '⚠ ') + res.label + (res.pass ? '' : ' — ' + res.hint)));
+    });
+  });
+
+  // model answer (if any) + technique + comparison checklist
+  const hasModels = ex.models && ex.models.length;
+  const box = el('div', { class: 'model', hidden: 'hidden' });
+  if (hasModels){
+    box.appendChild(el('h4', null, ex.models.length > 1 ? 'Model answers' : 'Model answer'));
+    ex.models.forEach(m => box.appendChild(el('p', { class: 'model-answer' }, m)));
+  }
+  box.appendChild(el('p', { class: 'technique' }, ex.technique));
+  if (ex.checks && ex.checks.length){
+    box.appendChild(el('h4', { class: 'compare-head' }, 'Compare your version'));
+    const ul = el('ul', { class: 'compare-list' });
+    ex.checks.forEach(c => ul.appendChild(el('li', null, c.label)));
+    box.appendChild(ul);
+  }
+
+  const btn = el('button', { class: 'show-model', type: 'button' }, hasModels ? 'Show model answer' : 'Show tips');
+  btn.addEventListener('click', () => { box.hidden = false; btn.disabled = true; });
+  node.appendChild(btn);
+  node.appendChild(box);
+  return node;
+}
+
+const scoreEls = {};
+
+function scoreText(areaId){
+  const p = Progress.get(areaId);
+  return p.correct + ' / ' + p.total + ' correct';
+}
+function updateScore(areaId){
+  if (scoreEls[areaId]) scoreEls[areaId].textContent = scoreText(areaId);
+}
+
+function renderExercise(ex){
+  if (ex.type === 'mc') return renderMc(ex);
+  if (ex.type === 'gap') return renderGap(ex);
+  return renderOpen(ex);
+}
+
+function renderArea(area, exercises){
+  const card = el('section', { class: 'area', dataset: { area: area.id } });
+  const head = el('header', { class: 'area-head' });
+  head.appendChild(el('h2', null, area.title));
+  const score = el('span', { class: 'score' }, scoreText(area.id));
+  scoreEls[area.id] = score;
+  head.appendChild(score);
+  card.appendChild(head);
+  card.appendChild(el('p', { class: 'blurb' }, area.blurb));
+  exercises.forEach(ex => card.appendChild(renderExercise(ex)));
+  if (GENERATORS[area.id]) card.appendChild(renderPractice(area));
+  return card;
+}
+
+const GENERATORS = { verben: generateVerbMc, kohaerenz: generateCohesionMc, satzbau: generateCombineOpen };
+
+function renderPractice(area){
+  const gen = GENERATORS[area.id];
+  const wrap = el('div', { class: 'practice' });
+  const toggle = el('button', { class: 'practice-toggle', type: 'button' }, 'Practice endlessly →');
+  const panel = el('div', { class: 'practice-panel', hidden: 'hidden' });
+  const tally = el('p', { class: 'practice-tally' }, 'Attempted: 0 · Correct: 0');
+  const slot = el('div', { class: 'practice-slot' });
+  const nextBtn = el('button', { class: 'practice-next', type: 'button' }, 'Next →');
+  let served = 0, answered = 0, correct = 0, lastType = 'mc';
+  let seed = (typeof Date !== 'undefined' && Date.now) ? (Date.now() >>> 0) : 1;
+
+  function updateTally(){
+    tally.textContent = (lastType === 'open')
+      ? 'Practiced: ' + served
+      : 'Attempted: ' + answered + ' · Correct: ' + correct;
+  }
+  function load(){
+    seed = (seed + 0x9E3779B1) >>> 0;
+    served += 1;
+    const ex = gen(seed);
+    lastType = ex.type;
+    slot.innerHTML = '';
+    if (ex.type === 'mc'){
+      slot.appendChild(renderMc(ex, {
+        trackProgress: false,
+        onAnswer: (isCorrect) => { answered += 1; if (isCorrect) correct += 1; updateTally(); },
+      }));
+    } else {
+      slot.appendChild(renderOpen(ex));
+    }
+    updateTally();
+  }
+
+  toggle.addEventListener('click', () => {
+    const opening = panel.hidden;
+    panel.hidden = !opening;
+    toggle.textContent = opening ? 'Hide practice ▲' : 'Practice endlessly →';
+    if (opening && !slot.children.length) load();
+  });
+  nextBtn.addEventListener('click', load);
+
+  panel.appendChild(tally);
+  panel.appendChild(slot);
+  panel.appendChild(nextBtn);
+  wrap.appendChild(toggle);
+  wrap.appendChild(panel);
+  return wrap;
+}
+
+function renderApp(root){
+  root.innerHTML = '';
+  root.appendChild(el('h1', null, 'Writing Skills Trainer'));
+  root.appendChild(el('p', { class: 'lead' }, 'Sharpen sentence structure, verb precision and cohesion at C1 level.'));
+  AREAS.forEach(area => {
+    const exs = EXERCISES.filter(e => e.area === area.id);
+    root.appendChild(renderArea(area, exs));
+  });
+}
+
+/* ============ TESTS ============ */
+const TESTS = [];
+function test(name, fn){ TESTS.push({ name, fn }); }
+function assert(cond, msg){ if (!cond) throw new Error(msg || 'assertion failed'); }
+function runSelfTests(){
+  const root = document.getElementById('app');
+  root.innerHTML = '';
+  const panel = el('div', { class: 'test-panel' });
+  let pass = 0, fail = 0;
+  TESTS.forEach(t => {
+    try { t.fn(); pass++; panel.appendChild(el('div', { class: 't-pass' }, '✓ ' + t.name)); }
+    catch (e){ fail++; panel.appendChild(el('div', { class: 't-fail' }, '✗ ' + t.name + ' — ' + e.message)); console.error(t.name, e); }
+  });
+  panel.prepend(el('div', { class: 't-summary' }, pass + ' passed, ' + fail + ' failed'));
+  root.appendChild(panel);
+  return { pass, fail };
+}
+
+test('harness runs and assert works', () => {
+  assert(true);
+  let threw = false;
+  try { assert(false, 'x'); } catch (e){ threw = true; }
+  assert(threw, 'assert(false) should throw');
+});
+
+test('validateAll passes for the real EXERCISES', () => {
+  const r = validateAll(EXERCISES);
+  assert(r.ok, 'errors: ' + r.errors.join(' | '));
+});
+test('there are exactly 6 exercises', () => {
+  assert(EXERCISES.length === 6, 'got ' + EXERCISES.length);
+});
+test('each area has exactly 2 exercises', () => {
+  const r = validateAll(EXERCISES);
+  AREAS.forEach(a => assert(r.perArea[a.id] === 2, a.id + ': ' + r.perArea[a.id]));
+});
+test('validateExercise rejects an mc with no correct option', () => {
+  const bad = { id: 'x', area: 'verben', type: 'mc', instruction: 'i', prompt: 'p',
+    options: [{ text: 'a', correct: false, rationale: 'r' }] };
+  assert(validateExercise(bad).ok === false, 'should be invalid');
+});
+test('validateExercise rejects a gap whose placeholders mismatch gaps', () => {
+  const bad = { id: 'y', area: 'kohaerenz', type: 'gap', instruction: 'i',
+    intro: 'Only one ⟦1⟧ placeholder.',
+    gaps: [
+      { options: [{ text: 'a', correct: true, rationale: 'r' }] },
+      { options: [{ text: 'b', correct: true, rationale: 'r' }] }
+    ] };
+  assert(validateExercise(bad).ok === false, 'should be invalid');
+});
+
+test('gradeMc marks the correct option', () => {
+  const ex = EXERCISES.find(e => e.id === 'vb-1');
+  const ci = ex.options.findIndex(o => o.correct);
+  const r = gradeMc(ex, ci);
+  assert(r.correct === true, 'should be correct');
+  assert(r.correctIndex === ci, 'correctIndex wrong');
+});
+test('gradeMc marks a wrong option and exposes the right one', () => {
+  const ex = EXERCISES.find(e => e.id === 'vb-1');
+  const wrong = ex.options.findIndex(o => !o.correct);
+  const r = gradeMc(ex, wrong);
+  assert(r.correct === false, 'should be incorrect');
+  assert(typeof r.correctRationale === 'string' && r.correctRationale.length > 0, 'no correctRationale');
+});
+test('gradeGap grades a single gap and exposes the right text', () => {
+  const ex = EXERCISES.find(e => e.id === 'ko-1');
+  const ci = ex.gaps[0].options.findIndex(o => o.correct);
+  assert(gradeGap(ex, 0, ci).correct === true, 'correct choice should pass');
+  const w = ex.gaps[0].options.findIndex(o => !o.correct);
+  const r = gradeGap(ex, 0, w);
+  assert(r.correct === false, 'wrong choice should fail');
+  assert(r.correctText === 'However', 'correctText: ' + r.correctText);
+});
+
+test('Progress totals: mc counts 1, gap counts its sub-gaps', () => {
+  Progress.init(EXERCISES);
+  assert(Progress.get('satzbau').total === 1, 'satzbau ' + Progress.get('satzbau').total);
+  assert(Progress.get('verben').total === 1, 'verben ' + Progress.get('verben').total);
+  assert(Progress.get('kohaerenz').total === 3, 'kohaerenz ' + Progress.get('kohaerenz').total);
+});
+test('Progress.record increments correct only on correct answers', () => {
+  Progress.init(EXERCISES);
+  Progress.record('verben', true);
+  Progress.record('verben', false);
+  assert(Progress.get('verben').correct === 1, 'correct ' + Progress.get('verben').correct);
+});
+
+test('renderMc shows all options and grades a correct click', () => {
+  Progress.init(EXERCISES);
+  const ex = EXERCISES.find(e => e.id === 'vb-1');
+  const node = renderMc(ex);
+  const btns = node.querySelectorAll('.opt');
+  assert(btns.length === ex.options.length, 'btns ' + btns.length);
+  const ci = ex.options.findIndex(o => o.correct);
+  btns[ci].click();
+  assert(btns[ci].classList.contains('is-correct'), 'chosen not marked correct');
+  assert(node.querySelector('.feedback').textContent.length > 0, 'no feedback text');
+  assert(btns[ci].disabled, 'buttons not locked');
+  assert(Progress.get('verben').correct === 1, 'progress not recorded');
+});
+test('renderMc marks a wrong click incorrect and reveals the correct option', () => {
+  Progress.init(EXERCISES);
+  const ex = EXERCISES.find(e => e.id === 'vb-1');
+  const node = renderMc(ex);
+  const btns = [...node.querySelectorAll('.opt')];
+  const wrong = ex.options.findIndex(o => !o.correct);
+  btns[wrong].click();
+  assert(btns[wrong].classList.contains('is-incorrect'), 'wrong not marked');
+  assert(node.querySelector('.opt.is-correct'), 'correct not revealed');
+  assert(Progress.get('verben').correct === 0, 'should not count as correct');
+});
+
+test('renderGap builds one select per gap and grades a correct choice', () => {
+  Progress.init(EXERCISES);
+  const ex = EXERCISES.find(e => e.id === 'ko-1');
+  const node = renderGap(ex);
+  const selects = node.querySelectorAll('select.gap-select');
+  assert(selects.length === ex.gaps.length, 'selects ' + selects.length);
+  const ci = ex.gaps[0].options.findIndex(o => o.correct);
+  selects[0].value = String(ci);
+  selects[0].dispatchEvent(new Event('change'));
+  assert(node.querySelector('.gap-feedback .is-correct'), 'no correct feedback');
+  assert(Progress.get('kohaerenz').correct === 1, 'progress not recorded');
+  assert(selects[0].disabled, 'select not locked');
+});
+test('renderGap marks a wrong choice incorrect', () => {
+  Progress.init(EXERCISES);
+  const ex = EXERCISES.find(e => e.id === 'ko-1');
+  const node = renderGap(ex);
+  const selects = node.querySelectorAll('select.gap-select');
+  const w = ex.gaps[1].options.findIndex(o => !o.correct);
+  selects[1].value = String(w);
+  selects[1].dispatchEvent(new Event('change'));
+  assert(node.querySelector('.gap-feedback .is-incorrect'), 'no incorrect feedback');
+  assert(Progress.get('kohaerenz').correct === 0, 'should not count');
+});
+
+test('renderOpen hides the model until requested, then reveals it', () => {
+  const ex = EXERCISES.find(e => e.id === 'st-2');
+  const node = renderOpen(ex);
+  assert(node.querySelector('textarea'), 'no textarea');
+  const box = node.querySelector('.model');
+  assert(box, 'no model box');
+  assert(box.hidden === true, 'model visible too early');
+  node.querySelector('.show-model').click();
+  assert(box.hidden === false, 'model not revealed');
+  assert(box.textContent.indexOf(ex.models[0].slice(0, 15)) !== -1, 'model text missing');
+  assert(box.textContent.indexOf(ex.technique.slice(0, 10)) !== -1, 'technique missing');
+});
+
+test('renderApp builds three area cards in AREAS order', () => {
+  Progress.init(EXERCISES);
+  const root = el('div');
+  renderApp(root);
+  const cards = root.querySelectorAll('.area');
+  assert(cards.length === 3, 'cards ' + cards.length);
+  assert(cards[0].querySelector('h2').textContent === 'Sentence Structure', 'first title wrong');
+  assert(cards[0].querySelectorAll('.exercise').length === 2, 'area should hold 2 exercises');
+});
+test('answering a correct mc updates that area’s score display', () => {
+  Progress.init(EXERCISES);
+  const root = el('div');
+  renderApp(root);
+  const verbenCard = [...root.querySelectorAll('.area')].find(c => c.dataset.area === 'verben');
+  const mc = verbenCard.querySelector('.exercise.mc');
+  const ex = EXERCISES.find(e => e.id === 'vb-1');
+  const ci = ex.options.findIndex(o => o.correct);
+  mc.querySelectorAll('.opt')[ci].click();
+  assert(verbenCard.querySelector('.score').textContent.indexOf('1 /') === 0,
+    'score: ' + verbenCard.querySelector('.score').textContent);
+});
+
+test('every open exercise carries at least two checks', () => {
+  EXERCISES.filter(e => e.type === 'open').forEach(e => {
+    assert(Array.isArray(e.checks) && e.checks.length >= 2, e.id + ' needs checks');
+  });
+});
+test('validateExercise rejects a check with an unknown type', () => {
+  const bad = { id: 'z', area: 'verben', type: 'open', instruction: 'i', prompt: 'p',
+    models: ['m'], technique: 't', checks: [{ type: 'bogus', label: 'l', hint: 'h' }] };
+  assert(validateExercise(bad).ok === false, 'should reject unknown check type');
+});
+test('validateAll still passes with checks added', () => {
+  assert(validateAll(EXERCISES).ok, 'errors: ' + validateAll(EXERCISES).errors.join(' | '));
+});
+test('countSentences counts terminal punctuation', () => {
+  assert(countSentences('One sentence only.') === 1, 'one');
+  assert(countSentences('A. B. C.') === 3, 'three');
+  assert(countSentences('No punctuation here') === 1, 'unpunctuated counts as one');
+  assert(countSentences('   ') === 0, 'blank is zero');
+});
+test('checkOpen treats whitespace-only input as empty', () => {
+  const ex = EXERCISES.find(e => e.id === 'ko-2');
+  assert(checkOpen(ex, '   ').empty === true, 'whitespace should be empty');
+});
+test('checkOpen flags remaining weak verbs and rewards strong ones', () => {
+  const ex = EXERCISES.find(e => e.id === 'vb-2');
+  const weak = checkOpen(ex, ex.prompt);
+  assert(weak.empty === false, 'prompt is not empty');
+  assert(weak.results.some(r => !r.pass), 'pale sentence should fail some checks');
+  const strong = checkOpen(ex, ex.models[0]);
+  assert(strong.results.every(r => r.pass), 'model should pass all: ' + strong.results.filter(r => !r.pass).map(r => r.label).join(', '));
+});
+test('checkOpen rewards a single combined sentence with subordination', () => {
+  const ex = EXERCISES.find(e => e.id === 'st-2');
+  const choppy = checkOpen(ex, 'Many commuters rely on the railway. The service is delayed. They have no alternative.');
+  assert(choppy.results.some(r => !r.pass), 'choppy text should fail something');
+  const good = checkOpen(ex, ex.models[0]);
+  assert(good.results.every(r => r.pass), 'model should pass all: ' + good.results.filter(r => !r.pass).map(r => r.label).join(', '));
+});
+test('renderOpen: Check my answer surfaces hints and re-runs', () => {
+  const ex = EXERCISES.find(e => e.id === 'vb-2');
+  const node = renderOpen(ex);
+  const ta = node.querySelector('textarea');
+  const checkBtn = node.querySelector('.check-answer');
+  assert(checkBtn, 'no check button');
+  checkBtn.click();
+  assert(node.querySelector('.check-results .check-empty'), 'empty input should prompt to write');
+  ta.value = ex.prompt;
+  checkBtn.click();
+  assert(node.querySelector('.check-results .is-incorrect'), 'weak answer should show a warning');
+  ta.value = ex.models[0];
+  checkBtn.click();
+  assert(!node.querySelector('.check-results .is-incorrect'), 'model answer should clear warnings');
+  assert(node.querySelectorAll('.check-results .is-correct').length === ex.checks.length, 'all checks pass for model');
+});
+test('renderOpen: model reveal shows the comparison checklist', () => {
+  const ex = EXERCISES.find(e => e.id === 'st-2');
+  const node = renderOpen(ex);
+  node.querySelector('.show-model').click();
+  const items = node.querySelectorAll('.compare-list li');
+  assert(items.length === ex.checks.length, 'compare list should mirror checks');
+});
+
+test('generateVerbMc produces a valid mc exercise', () => {
+  const ex = generateVerbMc(12345);
+  assert(validateExercise(ex).ok, 'invalid: ' + validateExercise(ex).errors.join('; '));
+  assert(ex.type === 'mc' && ex.area === 'verben', 'wrong type/area');
+  assert(ex.options.length >= 4, 'needs >=4 options, got ' + ex.options.length);
+  assert(ex.options.filter(o => o.correct).length === 1, 'exactly one correct');
+  assert(ex.prompt.indexOf(ex.weak) !== -1, 'weak phrase should appear in the prompt');
+});
+test('generateVerbMc is deterministic per seed and varies across seeds', () => {
+  assert(generateVerbMc(7).prompt === generateVerbMc(7).prompt, 'same seed → same prompt');
+  const prompts = new Set();
+  for (let s = 0; s < 12; s++) prompts.add(generateVerbMc(s).prompt);
+  assert(prompts.size >= 5, 'expected variety, got ' + prompts.size);
+});
+test('gradeMc works on a generated exercise', () => {
+  const ex = generateVerbMc(99);
+  const ci = ex.options.findIndex(o => o.correct);
+  assert(gradeMc(ex, ci).correct === true, 'correct option should grade true');
+  assert(gradeMc(ex, (ci + 1) % ex.options.length).correct === false, 'another option should grade false');
+});
+test('renderMc with trackProgress:false leaves the area score untouched', () => {
+  Progress.init(EXERCISES);
+  const before = Progress.get('verben').correct;
+  const ex = generateVerbMc(3);
+  const node = renderMc(ex, { trackProgress: false });
+  const ci = ex.options.findIndex(o => o.correct);
+  node.querySelectorAll('.opt')[ci].click();
+  assert(Progress.get('verben').correct === before, 'practice must not change the fixed area score');
+});
+test('renderPractice: toggle opens a generated task, Next loads another, tally counts', () => {
+  const area = AREAS.find(a => a.id === 'verben');
+  const node = renderPractice(area);
+  const toggle = node.querySelector('.practice-toggle');
+  assert(toggle, 'no toggle');
+  toggle.click();
+  const panel = node.querySelector('.practice-panel');
+  assert(panel.hidden === false, 'panel should open');
+  assert(node.querySelector('.practice-slot .exercise.mc'), 'a generated mc should appear');
+  node.querySelector('.practice-slot .opt').click();
+  assert(/Attempted: 1 /.test(node.querySelector('.practice-tally').textContent), 'tally should count the attempt');
+  node.querySelector('.practice-next').click();
+  assert(node.querySelector('.practice-slot .exercise.mc'), 'Next should load a fresh mc');
+});
+
+test('generateCohesionMc produces a valid connector mc', () => {
+  const ex = generateCohesionMc(2024);
+  assert(validateExercise(ex).ok, 'invalid: ' + validateExercise(ex).errors.join('; '));
+  assert(ex.area === 'kohaerenz' && ex.type === 'mc', 'wrong area/type');
+  assert(ex.options.length === 4 && ex.options.filter(o => o.correct).length === 1, 'one correct of four');
+  assert(ex.prompt.indexOf('___') !== -1, 'prompt should contain the blank');
+});
+test('generateCohesionMc varies across seeds', () => {
+  const set = new Set();
+  for (let s = 0; s < 12; s++){
+    const ex = generateCohesionMc(s);
+    set.add(ex.prompt + '|' + ex.options.map(o => o.text).join(','));
+  }
+  assert(set.size >= 5, 'expected variety, got ' + set.size);
+});
+test('generateCombineOpen produces an open task with checks and no model', () => {
+  const ex = generateCombineOpen(55);
+  assert(ex.area === 'satzbau' && ex.type === 'open', 'wrong area/type');
+  assert(Array.isArray(ex.checks) && ex.checks.length >= 2, 'needs checks');
+  assert(ex.models.length === 0, 'should have no model answer');
+  assert((ex.prompt.match(/[.!?]/g) || []).length >= 2, 'prompt should be several short sentences');
+  const choppy = checkOpen(ex, ex.prompt);
+  assert(choppy.results.some(r => !r.pass), 'the choppy prompt should fail some checks');
+  const combined = checkOpen(ex, 'Although it strains local infrastructure, the festival, which draws thousands, has prompted little preparation.');
+  assert(combined.results.every(r => r.pass), 'a good combined sentence should pass: ' + combined.results.filter(r => !r.pass).map(r => r.label).join(', '));
+});
+test('renderOpen without models offers “Show tips” and reveals the technique', () => {
+  const ex = generateCombineOpen(8);
+  const node = renderOpen(ex);
+  const btn = node.querySelector('.show-model');
+  assert(btn.textContent === 'Show tips', 'label should be Show tips, got ' + btn.textContent);
+  assert(node.querySelector('.check-answer'), 'check button should still be present');
+  btn.click();
+  assert(node.querySelector('.model').textContent.indexOf(ex.technique.slice(0, 10)) !== -1, 'technique should appear');
+});
+test('renderOpen with models still says “Show model answer”', () => {
+  const ex = EXERCISES.find(e => e.id === 'st-2');
+  const node = renderOpen(ex);
+  assert(node.querySelector('.show-model').textContent === 'Show model answer', 'fixed open tasks keep their label');
+});
+test('renderPractice works for an open generator (satzbau): tally shows Practiced', () => {
+  const area = AREAS.find(a => a.id === 'satzbau');
+  const node = renderPractice(area);
+  node.querySelector('.practice-toggle').click();
+  assert(node.querySelector('.practice-slot .exercise.open'), 'an open task should appear');
+  assert(/Practiced: 1/.test(node.querySelector('.practice-tally').textContent), 'tally: ' + node.querySelector('.practice-tally').textContent);
+  node.querySelector('.practice-next').click();
+  assert(/Practiced: 2/.test(node.querySelector('.practice-tally').textContent), 'tally should advance on Next');
+});
+test('all three areas expose a practice panel', () => {
+  const root = el('div');
+  renderApp(root);
+  assert(root.querySelectorAll('.practice-toggle').length === 3, 'expected 3 practice panels');
+});
+
+test('banks are well stocked for variety', () => {
+  assert(VERB_BANK.subjects.length >= 18, 'subjects ' + VERB_BANK.subjects.length);
+  assert(VERB_BANK.topics.length >= 18, 'topics ' + VERB_BANK.topics.length);
+  assert(VERB_BANK.frames.length >= 8, 'frames ' + VERB_BANK.frames.length);
+  assert(COHESION_BANK.pairs.length >= 20, 'pairs ' + COHESION_BANK.pairs.length);
+  assert(COMBINE_BANK.length >= 28, 'sets ' + COMBINE_BANK.length);
+});
+test('every verb frame has 3 distractors, >=2 strong, all with text + rationale', () => {
+  VERB_BANK.frames.forEach((f, i) => {
+    assert(f.distractors.length === 3, 'frame ' + i + ' (' + f.weak + ') distractors=' + f.distractors.length);
+    assert(f.strong.length >= 2, 'frame ' + i + ' (' + f.weak + ') strong=' + f.strong.length);
+    [].concat(f.strong, f.distractors).forEach((o, j) => assert(o.text && o.rationale, 'frame ' + i + ' option ' + j + ' missing text/rationale'));
+  });
+});
+test('every cohesion relation has a label and pairs reference known relations', () => {
+  assert(Object.keys(COHESION_BANK.connectors).length >= 4, 'need >=4 relations for distractors');
+  Object.keys(COHESION_BANK.connectors).forEach(r => {
+    assert(COHESION_BANK.connectors[r].length >= 1, 'relation ' + r + ' has no connectors');
+    assert(COHESION_BANK.labels[r], 'relation ' + r + ' has no label');
+  });
+  COHESION_BANK.pairs.forEach((p, i) => assert(COHESION_BANK.connectors[p.relation], 'pair ' + i + ' unknown relation "' + p.relation + '"'));
+});
+
+/* ============ BOOT ============ */
+function boot(){
+  const testing = /test/.test(location.search) || /test/.test(location.hash);
+  Progress.init(EXERCISES);
+  if (testing){ runSelfTests(); return; }
+  renderApp(document.getElementById('app'));
+}
+document.addEventListener('DOMContentLoaded', boot);
+</script>
+</body>
+</html>
