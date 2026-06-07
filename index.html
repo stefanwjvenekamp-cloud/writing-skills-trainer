@@ -253,6 +253,8 @@ const VERB_BANK = {
     'Her essay', 'The survey', 'The documentary', 'The columnist', 'The review',
     'The op-ed', 'The white paper', 'The professor', 'The analyst', 'The investigation',
     'The lecture', 'The paper', 'The critic', 'The commentator', 'The exposé',
+    'The journalist', 'The historian', 'The economist', 'The institute', 'The panel',
+    'The editorial board', 'The researcher', 'The essayist',
   ],
   topics: [
     'that social media erodes attention spans',
@@ -275,6 +277,16 @@ const VERB_BANK = {
     'that renewable capacity has outpaced official forecasts',
     'that the reforms have stalled amid political wrangling',
     'that nostalgia increasingly shapes consumer culture',
+    'that the curriculum overlooks digital literacy',
+    'that wealth inequality is widening steadily',
+    'that public transport remains chronically underfunded',
+    'that the legislation will prove unenforceable',
+    'that early intervention yields the best outcomes',
+    'that the museum has misjudged its audience',
+    'that remote working is reshaping city centres',
+    'that the algorithm amplifies extreme content',
+    'that the treaty lacks any binding commitments',
+    'that volunteering strengthens community ties',
   ],
   // Two families. The correct answers are clearly the best neutral choice; the
   // distractors are STRONG, plausible verbs that must be excluded by reasoning
@@ -282,7 +294,7 @@ const VERB_BANK = {
   families: [
     {
       label: 'claim',
-      weak: ['makes the point', 'thinks', 'says', 'states', 'mentions', 'points out'],
+      weak: ['makes the point', 'thinks', 'says', 'states', 'mentions', 'points out', 'writes', 'reports'],
       correct: [
         { text: 'contends', rationale: '“contend that …” — a neutral, confident assertion of a claim.' },
         { text: 'argues', rationale: '“argue that …” — states a reasoned claim with exactly the right, neutral force.' },
@@ -290,6 +302,16 @@ const VERB_BANK = {
         { text: 'asserts', rationale: '“assert that …” — states the claim with plain conviction.' },
         { text: 'holds', rationale: '“hold that …” — the precise verb for a reasoned view.' },
         { text: 'posits', rationale: '“posit that …” — puts the claim forward for consideration.' },
+        { text: 'claims', rationale: '“claim that …” — straightforwardly asserts the proposition.' },
+        { text: 'submits', rationale: '“submit that …” — advances the claim in a measured, formal register.' },
+        { text: 'insists', rationale: '“insist that …” — asserts the claim firmly and emphatically.' },
+        { text: 'reasons', rationale: '“reason that …” — asserts the claim as a conclusion from grounds.' },
+        { text: 'affirms', rationale: '“affirm that …” — states the claim with firm conviction.' },
+        { text: 'avers', rationale: '“aver that …” — declares the claim to be true (formal).' },
+        { text: 'stresses', rationale: '“stress that …” — asserts the point with emphasis.' },
+        { text: 'emphasises', rationale: '“emphasise that …” — foregrounds the claim deliberately.' },
+        { text: 'underscores', rationale: '“underscore that …” — drives the claim home.' },
+        { text: 'highlights', rationale: '“highlight that …” — singles the claim out for attention.' },
       ],
       distractors: [
         { text: 'denies', rationale: 'The opposite: to deny is to reject the claim, not assert it.' },
@@ -299,17 +321,31 @@ const VERB_BANK = {
         { text: 'laments', rationale: 'Adds emotional regret rather than neutrally stating a claim.' },
         { text: 'boasts', rationale: 'Implies bragging — the wrong tone for a neutral assertion.' },
         { text: 'insinuates', rationale: 'Implies a sly, indirect hint rather than an open claim.' },
+        { text: 'refutes', rationale: 'To refute is to argue against and disprove — the opposite of asserting the claim.' },
+        { text: 'rejects', rationale: 'To reject is to dismiss the claim, not to make it.' },
+        { text: 'questions', rationale: 'To question is to cast doubt on the claim, not to assert it.' },
+        { text: 'concedes', rationale: 'Implies a reluctant admission the neutral original does not carry.' },
+        { text: 'presumes', rationale: 'Implies an unfounded assumption rather than a supported claim.' },
+        { text: 'speculates', rationale: 'Too tentative — suggests guessing rather than a reasoned claim.' },
+        { text: 'complains', rationale: 'Adds a note of grievance rather than neutrally stating a claim.' },
+        { text: 'fears', rationale: '“fear that …” expresses worry, not a confident assertion.' },
       ],
     },
     {
       label: 'evidence',
-      weak: ['shows', 'goes to show', 'makes clear'],
+      weak: ['shows', 'goes to show', 'makes clear', 'makes plain'],
       correct: [
         { text: 'demonstrates', rationale: '“demonstrate that …” — shows it on the evidence; precise and formal.' },
         { text: 'reveals', rationale: '“reveal that …” — brings the finding to light; vivid and exact.' },
         { text: 'confirms', rationale: '“confirm that …” — the evidence settles the matter.' },
         { text: 'establishes', rationale: '“establish that …” — proves it firmly on the evidence.' },
         { text: 'indicates', rationale: '“indicate that …” — the evidence points clearly to it.' },
+        { text: 'proves', rationale: '“prove that …” — establishes it conclusively on the evidence.' },
+        { text: 'illustrates', rationale: '“illustrate that …” — shows it clearly with a case in point.' },
+        { text: 'attests', rationale: '“attest that …” — testifies to it on the evidence.' },
+        { text: 'substantiates', rationale: '“substantiate that …” — backs the point with solid evidence.' },
+        { text: 'corroborates', rationale: '“corroborate that …” — confirms it with supporting evidence.' },
+        { text: 'verifies', rationale: '“verify that …” — confirms it as true on checking.' },
       ],
       distractors: [
         { text: 'alleges', rationale: 'To allege is to claim without proof — the opposite of showing with evidence.' },
@@ -318,6 +354,10 @@ const VERB_BANK = {
         { text: 'speculates', rationale: 'Mere guessing — not something the evidence “shows”.' },
         { text: 'denies', rationale: 'The opposite: to deny is to reject, not to show.' },
         { text: 'disputes', rationale: 'To dispute is to challenge the finding, not to demonstrate it.' },
+        { text: 'conjectures', rationale: '“conjecture that …” is to guess — not to show on evidence.' },
+        { text: 'surmises', rationale: 'To surmise is to infer on a hunch, not to demonstrate.' },
+        { text: 'supposes', rationale: 'To suppose is to assume, not to evidence.' },
+        { text: 'doubts', rationale: 'To doubt is to question the finding — the opposite of showing it.' },
       ],
     },
   ],
@@ -1281,8 +1321,8 @@ test('verb families: pools well-formed and correct/distractor sets disjoint', ()
   assert(VERB_BANK.families.length >= 2, 'families ' + VERB_BANK.families.length);
   VERB_BANK.families.forEach((f, i) => {
     assert(f.weak.length >= 1, 'family ' + i + ' needs weak forms');
-    assert(f.correct.length >= 2, 'family ' + i + ' correct=' + f.correct.length);
-    assert(f.distractors.length >= 3, 'family ' + i + ' distractors=' + f.distractors.length);
+    assert(f.correct.length >= 5, 'family ' + i + ' correct=' + f.correct.length);
+    assert(f.distractors.length >= 6, 'family ' + i + ' distractors=' + f.distractors.length);
     const cset = new Set(f.correct.map(o => o.text));
     f.distractors.forEach(d => assert(!cset.has(d.text), 'family ' + i + ' distractor "' + d.text + '" also a correct answer'));
     [].concat(f.correct, f.distractors).forEach((o, j) => assert(o.text && o.rationale, 'family ' + i + ' option ' + j + ' missing text/rationale'));
@@ -1293,6 +1333,14 @@ test('generated verb mc has no weak filler options (distractors are strong verbs
   for (let s = 0; s < 24; s++){
     generateVerbMc(s).options.forEach(o => assert(WEAK.indexOf(o.text) === -1, 'seed ' + s + ' has weak option "' + o.text + '"'));
   }
+});
+test('generated verb MCs draw on a wide range of verbs', () => {
+  const corrects = new Set(), all = new Set();
+  for (let s = 0; s < 60; s++){
+    generateVerbMc(s).options.forEach(o => { all.add(o.text); if (o.correct) corrects.add(o.text); });
+  }
+  assert(corrects.size >= 10, 'distinct correct verbs ' + corrects.size);
+  assert(all.size >= 20, 'distinct verbs overall ' + all.size);
 });
 test('every cohesion relation has a label and pairs reference known relations', () => {
   assert(Object.keys(COHESION_BANK.connectors).length >= 4, 'need >=4 relations for distractors');
